@@ -1,8 +1,4 @@
-Perfect — here’s your **Concept Mastery Cheat Sheet** for **JavaScript Functions & Scope**, ultra-compact but complete, with all **gotchas grouped in one block**.
-
----
-
-# 🔧 JavaScript Functions & Scope — Cheat Card
+# 🔧 JavaScript Functions & Scope
 
 **Concept:** Functions encapsulate logic, define scope, and control variable visibility.
 
@@ -201,7 +197,7 @@ inc(); // 2
 
 ---
 
-# 🆚 Function Declarations vs Function Expressions — Cheat Card
+# 🆚 Function Declarations vs Function Expressions
 
 **Concept:** Two main ways to define functions in JS, differing in hoisting, scope, and behavior.
 
@@ -350,7 +346,7 @@ const sub = (a, b) => a - b;
 
 ---
 
-# 🎛️ Default & Rest Parameters — Cheat Card
+# 🎛️ Default & Rest Parameters
 
 **Concept:** Special function parameter features (ES6) for flexibility.
 
@@ -483,7 +479,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Arrow Functions**, covering 
 
 ---
 
-# 🏹 JavaScript Arrow Functions — Cheat Card
+# 🏹 JavaScript Arrow Functions
 
 **Concept:** Concise function expressions with lexical `this`, introduced in ES6.
 
@@ -590,6 +586,11 @@ const makeObj = () => ({ a: 1, b: 2 });
 
    - Tiny overhead in some engines vs declarations, but usually negligible.
 
+10. **Arrow vs normal function**
+
+- Arrow = “just pass through my parent’s context.”
+- Normal function = “I create my own mini-world with `this` and `arguments`.”
+
 ---
 
 ### Best Practices
@@ -613,16 +614,22 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
 
 ---
 
-# 🏗️ JavaScript First-Class & Higher-Order Functions — Cheat Card
+# 🏗️ JavaScript First-Class & Higher-Order Functions
 
 **Concepts:**
 
-- **First-Class Functions** → Functions are treated as values (can be stored, passed, returned).
+- **First-Class Functions** → Functions when treated as values (can be stored, passed, returned).
 - **Higher-Order Functions (HOFs)** → Functions that take other functions as args OR return functions.
 
 ---
 
 ### First-Class Functions
+
+- Types:
+
+  - Function stored in variable.
+  - Function passed as argument.
+  - Function returned as value.
 
 - Assigned to variables:
 
@@ -658,11 +665,19 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
 
 ### Higher-Order Functions
 
+- Types:
+
+  - Callback-based (setTimeout(fn, 1000)).
+  - Function factories (makeMultiplier(2) returns new function).
+  - Array utilities (map, filter, reduce).
+
 - **Takes functions as input**:
 
   ```js
   [1, 2, 3].map((x) => x * 2); // map takes callback
   ```
+
+- Passing a function doesn’t execute it → calling `fn()` executes it.
 
 - **Returns function as output**:
 
@@ -676,8 +691,15 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
   ```js
   const twice = (f) => (x) => f(f(x));
   const inc = (x) => x + 1;
-  twice(inc)(5); // 7
+  twice(inc)(5); // -> twice = (inc) => (x) => inc(inc(x)) -> inc(inc(5)) -> inc(6) -> 7
   ```
+
+---
+
+**Mnemonic:**
+
+- First-class = “functions are variables.”
+- Higher-order = “functions manage other functions.”
 
 ---
 
@@ -698,6 +720,36 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
      ```
 
      (fix: `obj.fn.bind(obj)` or arrow wrapper).
+
+   - **Reference vs Invocation**
+
+     ```js
+     setTimeout(sayHi(), 1000); // ❌ sayHi() runs now, passes return value immediately without waiting for 1000ms
+     setTimeout(sayHi, 1000); // ✅ setTimeout runs later as only reference is passed to it
+     ```
+
+   - **Pass arguments (3 ways)**
+
+     ```js
+     // ✅ sayHi is called with "Kalidas" after 1000ms
+     setTimeout(sayHi, 1000, "Kalidas");
+     setTimeout(() => sayHi("Kalidas"), 1000);
+     setTimeout(sayHi.bind(null, "Kalidas"), 1000);
+     ```
+
+   - **Methods & `this`**
+
+     ```js
+     const greeter = {
+       name: "Kalidas",
+       hi() {
+         console.log(this.name);
+       },
+     };
+     setTimeout(greeter.hi, 500); // ❌ undefined (lost `this`)
+     setTimeout(() => greeter.hi(), 500); // ✅ arrow keeps receiver
+     setTimeout(greeter.hi.bind(greeter), 500); // ✅ bind fixes `this`)
+     ```
 
 2. **Callback hell**
 
@@ -748,6 +800,18 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
      [1, 2].forEach(async (x) => await doWork(x)); // not sequential
      ```
 
+10. **Surprising quirks**
+
+- Not all functions are HOFs, but all functions are first-class.
+- Even constructors are functions (first-class).
+
+11. **Examples**
+
+- Array methods (map, filter, reduce).
+- Event listeners (element.addEventListener("click", handler)).
+- Middleware in Express.js.
+- React hooks (useState, useEffect)
+
 ---
 
 ### Best Practices
@@ -771,7 +835,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Function Scope vs Block Scop
 
 ---
 
-# 📍 JavaScript Function Scope vs Block Scope — Cheat Card
+# 📍 JavaScript Function Scope vs Block Scope
 
 **Concept:** Determines where variables are accessible in code.
 
@@ -908,7 +972,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Closures** — complete with
 
 ---
 
-# 🔒 JavaScript Closures — Cheat Card
+# 🔒 JavaScript Closures
 
 **Concept:** A closure is a function that “remembers” variables from its **lexical scope** even after the outer function has finished executing.
 
@@ -1061,7 +1125,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Recursion** in JavaScript �
 
 ---
 
-# 🔁 JavaScript Recursion — Cheat Card
+# 🔁 JavaScript Recursion
 
 **Concept:** A function that calls itself until a base condition is met.
 
@@ -1182,7 +1246,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Immediately Invoked Function
 
 ---
 
-# ⚡ JavaScript IIFE — Cheat Card
+# ⚡ JavaScript IIFE
 
 **Concept:** Function expression that executes immediately after it’s defined.
 
@@ -1303,7 +1367,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Callback Functions** — com
 
 ---
 
-# 🔄 JavaScript Callback Functions — Cheat Card
+# 🔄 JavaScript Callback Functions
 
 **Concept:** A function passed as an argument to another function, executed later (synchronously or asynchronously).
 
@@ -1423,7 +1487,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **the `arguments` object** —
 
 ---
 
-# 📦 JavaScript `arguments` Object — Cheat Card
+# 📦 JavaScript `arguments` Object
 
 **Concept:** Array-like object available inside **non-arrow functions** that holds all passed arguments.
 
@@ -1547,7 +1611,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Tail Call Optimization (TCO)
 
 ---
 
-# 🔚 JavaScript Tail Call Optimization — Cheat Card
+# 🔚 JavaScript Tail Call Optimization
 
 **Concept:** An optimization where **a function call in tail position** (last action before return) reuses the current stack frame instead of creating a new one → avoids stack overflow.
 

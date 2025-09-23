@@ -1,17 +1,4 @@
-<!-- create index file for all the topics in this file -->
-
-# Index
-
-- [Function Declarations vs Function Expressions](#concept-mastery-function-declarations-vs-function-expressions)
-- [Arrow Functions](#concept-mastery-arrow-functions)
-- [Closures](#concept-mastery-closures)
-- [First-Class & Higher-Order Functions](#concept-mastery-first-class-higher-order-functions)
-- [The `arguments` object](#concept-mastery-the-arguments-object)
-- [IIFE](#concept-mastery-iife)
-
----
-
-# Concept Mastery: **Function Declarations vs Function Expressions**
+# **Function Declarations vs Function Expressions**
 
 ---
 
@@ -350,7 +337,7 @@ Let’s cover both together in the **21-section Concept Mastery Template**.
 
 ---
 
-# Concept Mastery: **Default Parameters & Rest Parameters**
+# **Default Parameters & Rest Parameters**
 
 ---
 
@@ -696,7 +683,7 @@ Let’s cover both together in the **21-section Concept Mastery Template**.
 
 ---
 
-# Concept Mastery: **Arrow Functions**
+# **Arrow Functions**
 
 ---
 
@@ -1028,7 +1015,7 @@ Here’s the **21-section Concept Mastery Template** applied to **First-Class & 
 
 ---
 
-# Concept Mastery: **First-Class & Higher-Order Functions**
+# **First-Class & Higher-Order Functions**
 
 ---
 
@@ -1349,7 +1336,7 @@ Let’s cover it in detail with the **21-section Concept Mastery Template** 🚀
 
 ---
 
-# Concept Mastery: **Function Scope vs Block Scope**
+# **Function Scope vs Block Scope**
 
 ---
 
@@ -1706,7 +1693,7 @@ Here’s the **full 21-section Concept Mastery Template** applied to **Closures*
 
 ---
 
-# Concept Mastery: **Closures**
+# **Closures**
 
 ---
 
@@ -2054,7 +2041,7 @@ Let’s go step-by-step with the **21-section Concept Mastery Template** for **R
 
 ---
 
-# Concept Mastery: **Recursion**
+# **Recursion**
 
 ---
 
@@ -2374,7 +2361,7 @@ Let’s go step-by-step with the **21-section Concept Mastery Template** for **R
 
 ---
 
-# Concept Mastery: **Immediately Invoked Function Expressions (IIFE)**
+# **Immediately Invoked Function Expressions (IIFE)**
 
 ---
 
@@ -2680,7 +2667,7 @@ Let’s cover **Callback Functions** fully with the **21-section Concept Mastery
 
 ---
 
-# Concept Mastery: **Callback Functions**
+# **Callback Functions**
 
 ---
 
@@ -2995,7 +2982,7 @@ Let’s cover **Callback Functions** fully with the **21-section Concept Mastery
 
 ---
 
-# Concept Mastery: **The `arguments` Object**
+# **The `arguments` Object**
 
 ---
 
@@ -3321,7 +3308,7 @@ Let’s go step by step with the **21-section Concept Mastery Template** for **T
 
 ---
 
-# Concept Mastery: **Tail Call Optimization (Spec)**
+# **Tail Call Optimization (Spec)**
 
 ---
 
