@@ -1,6 +1,13 @@
-Perfect 🔥 — this is a **classic interview topic** because it tests your understanding of **hoisting, scope, first-class functions, and execution model**. Many devs know “syntax” but miss the deep differences.
+<!-- create index file for all the topics in this file -->
 
-Let’s fully master **Function Declarations vs Function Expressions** with the **21-section Concept Mastery Template** 🚀
+# Index
+
+- [Function Declarations vs Function Expressions](#concept-mastery-function-declarations-vs-function-expressions)
+- [Arrow Functions](#concept-mastery-arrow-functions)
+- [Closures](#concept-mastery-closures)
+- [First-Class & Higher-Order Functions](#concept-mastery-first-class-higher-order-functions)
+- [The `arguments` object](#concept-mastery-the-arguments-object)
+- [IIFE](#concept-mastery-iife)
 
 ---
 
@@ -686,10 +693,6 @@ Let’s cover both together in the **21-section Concept Mastery Template**.
 * **Teachability check:** Can you explain why `f(null)` doesn’t trigger default but `f(undefined)` does?
 
 ---
-
-Perfect choice 🎯 — **Arrow Functions** are one of the most important ES6 features. They look simple, but they completely change **`this` binding, arguments handling, and scope behavior**. Many devs use them casually without fully understanding their quirks, which is why interviewers test them a lot.
-
-Let’s go deep with the **21-section Concept Mastery Template** on **Arrow Functions** 🚀
 
 ---
 
@@ -2369,10 +2372,6 @@ Let’s go step-by-step with the **21-section Concept Mastery Template** for **R
 
 👉 Do you want me to continue next into **IIFE (Immediately Invoked Function Expressions)** — which often combine recursion (self-invoking) — or jump directly to **Asynchronous JavaScript (callbacks, promises, async/await)**?
 
-Perfect 🚀 — **Immediately Invoked Function Expressions (IIFE)** are a classic JavaScript pattern. They combine **function expressions + closures** to create isolated scopes, widely used before ES6 modules for **data privacy, initialization, and avoiding global pollution**.
-
-Let’s master **IIFE** using the **21-section Concept Mastery Template** 👇
-
 ---
 
 # Concept Mastery: **Immediately Invoked Function Expressions (IIFE)**
@@ -2993,10 +2992,6 @@ Let’s cover **Callback Functions** fully with the **21-section Concept Mastery
 ✅ That’s the **full mastery of Callback Functions** in JavaScript.
 
 👉 Next, do you want me to go into **Promises** (natural next step after callbacks) or into **Event Loop & Async Execution Model** (to see *how* callbacks actually get scheduled)?
-
-Perfect 🎯 — the **`arguments` object** is a classic JavaScript feature. It’s often misunderstood because of its quirks, its interaction with **functions, scope, strict mode, and rest parameters**, and the fact that modern code prefers `...rest`.
-
-Let’s cover **the `arguments` object** fully with the **21-section Concept Mastery Template** 🚀
 
 ---
 

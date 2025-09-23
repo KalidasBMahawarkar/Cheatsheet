@@ -361,6 +361,10 @@ const sub = (a, b) => a - b;
 - Values assigned **if argument is `undefined`**.
 - Evaluated **at call time**, left-to-right.
 - Can use earlier parameters as defaults.
+- Types:
+  - Static defaults: `function f(x = 5) {}`.
+  - Dynamic defaults: `function f(x = Date.now()) {}`.
+  - Dependent defaults: `function f(a = 1, b = a * 2) {}`.
 
 ```js
 function greet(name = "Guest", lang = "en") {
@@ -377,6 +381,9 @@ greet("Kalidas"); // "Hi Kalidas, lang=en"
 
 - Collects “the rest” of args into an **array**.
 - Must be **last parameter**.
+- Types:
+  - Pure rest (`function f(...args) {}`).
+  - Mixed (`function f(a, b, ...others) {}`).
 
 ```js
 function sum(...nums) {
@@ -392,7 +399,7 @@ sum(1, 2, 3, 4); // 10
 
 ### Gotchas ⚠️ (Exhaustive)
 
-1. **Default param works only for `undefined`**
+1. **Default param works only for `undefined`** -> `null`, `0`, `""` still override defaults because they are intentionally falsy values.
 
    - `greet(null)` → `"Hi null"` (not default).
    - `greet(undefined)` → `"Hi Guest"` (uses default).
@@ -521,7 +528,7 @@ const makeObj = () => ({ a: 1, b: 2 });
 
 1. **`this` binding**
 
-   - Arrow inherits `this` from surrounding scope.
+   - Arrow inherits `this` from surrounding scope at time of creation.
    - Great for callbacks:
 
      ```js
@@ -596,7 +603,7 @@ const makeObj = () => ({ a: 1, b: 2 });
 
 ---
 
-👉 Mnemonic: **“Arrows are short, inherit `this`, but lack `arguments` & `new`.”**
+👉 Mnemonic: **“Arrows are short, inherit `this`, and lack `arguments` & `new`.”**
 
 ---
 
