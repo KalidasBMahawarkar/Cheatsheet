@@ -1,16 +1,16 @@
 # Index
 
 - [Function Declarations vs Function Expressions](#function-declarations-vs-function-expressions)
-- [Default Parameters & Rest Parameters](#default--rest-parameters)
-- [JavaScript Arrow Functions](#javascript-arrow-functions)
-- [JavaScript First-Class & Higher-Order Functions](#javascript-first-class--higher-order-functions)
-- [JavaScript Function Scope vs Block Scope](#javascript-function-scope-vs-block-scope)
-- [JavaScript Closures](#javascript-closures)
-- [JavaScript Recursion](#javascript-recursion)
-- [JavaScript IIFE](#javascript-iife)
-- [JavaScript Callback Functions](#javascript-callback-functions)
-- [JavaScript `arguments` Object](#javascript-arguments-object)
-- [JavaScript Tail Call Optimization](#javascript-tail-call-optimization)
+- [Default Parameters & Rest Parameters](#default-parameters--rest-parameters)
+- [JavaScript Arrow Functions](#arrow-functions)
+- [JavaScript First-Class & Higher-Order Functions](#first-class--higher-order-functions)
+- [JavaScript Function Scope vs Block Scope](#function-scope-vs-block-scope)
+- [JavaScript Closures](#closures)
+- [JavaScript Recursion](#recursion)
+- [JavaScript IIFE](#immediately-invoked-function-expression-iife)
+- [JavaScript Callback Functions](#callback-functions)
+- [JavaScript `arguments` Object](#the-arguments-object)
+- [JavaScript Tail Call Optimization](#tail-call-optimization-spec)
 
 # **Function Declarations vs Function Expressions**
 
