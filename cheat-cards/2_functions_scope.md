@@ -1,3 +1,17 @@
+# Index
+- [🔧 JavaScript Functions & Scope](#-javascript-functions--scope)
+- [🆚 Function Declarations vs Function Expressions](#-function-declarations-vs-function-expressions)  
+- [🎛️ Default & Rest Parameters](#-default--rest-parameters)
+- [🏹 JavaScript Arrow Functions](#-javascript-arrow-functions)
+- [🏗️ JavaScript First-Class & Higher-Order Functions](#-javascript-first-class--higher-order-functions)
+- [📍 JavaScript Function Scope vs Block Scope](#-javascript-function-scope-vs-block-scope)
+- [🔒 JavaScript Closures](#-javascript-closures)
+- [🔁 JavaScript Recursion](#-javascript-recursion)
+- [⚡ JavaScript IIFE](#-javascript-iife)
+- [🔄 JavaScript Callback Functions](#-javascript-callback-functions)
+- [📦 JavaScript `arguments` Object](#-javascript-arguments-object)
+- [🔚 JavaScript Tail Call Optimization](#-javascript-tail-call-optimization)
+
 # 🔧 JavaScript Functions & Scope
 
 **Concept:** Functions encapsulate logic, define scope, and control variable visibility.
