@@ -797,7 +797,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Closures** — complete with
 
 # 🔒 JavaScript Closures
 
-## **Concept:** A closure is a function that “remembers” variables from its **lexical scope** even after the outer function has finished executing.
+## **Concept:** A closure is a function that saves references to variables from its **lexical scope** even after the outer function has finished executing.
 
 ### Syntax
 
@@ -837,30 +837,33 @@ inc(); // 2
    ctr.get(); // 1 (c is private)
    ```
 2. **Memoization / Caching**
+
    ```js
    function memoize(fn) {
      const cache = {};
      return (arg) => cache[arg] ?? (cache[arg] = fn(arg));
    }
-   const square = memoize((x) => x * x);
-   square(4); // caches 16
+   const square = memoize((x) => x * x); // memoize fun executes and ref cache is passed to square with returned function
+   square(4); // (cache[arg] = fn(arg)) -> cache[4] = fn(4) -> ((x) => x * x)(4) -> 16;
+   // (function)(value) -> function(value);
    ```
+
 3. **Once-Only Execution**
    ```js
    function once(fn) {
-     let called = false,
-       result;
-     return (...args) => {
+      let called = false,
+      let result;
+     return () => {
        if (!called) {
-         result = fn(...args);
+         result = fn();
          called = true;
        }
        return result;
      };
    }
    const init = once(() => console.log("run"));
-   init(); // run
-   init(); // (no effect)
+   init(); // run only once
+   init(); // (no effect) -> called already true, also result is cached
    ```
 4. **Partial Application / Currying**
    ```js
@@ -923,6 +926,11 @@ Here’s your **Concept Mastery Cheat Sheet** for **Recursion** in JavaScript �
 
 ## **Concept:** A function that calls itself until a base condition is met.
 
+- Solves Problems with nested, hierarchical, or repetitive structure
+- Execution rules:
+  - Each recursive call adds a stack frame to the call stack.
+  - Each recursive call has its own scope & local variables.
+
 ### Syntax
 
 ```js
@@ -947,6 +955,7 @@ function b(y) {
 - **Direct** → function calls itself.
 - **Indirect/Mutual** → multiple functions call each other.
 - **Tail recursion** → recursive call is last statement (can be optimized in some langs, but not reliably in JS).
+- **Mutual recursion** → multiple functions call each other cyclically.
 
 ---
 
@@ -1001,6 +1010,37 @@ function walk(node) {
    - Recursive inner functions may capture outer vars and cause leaks.
 9. **Debugging stack traces**
    - Anonymous recursion → poor trace readability.
+10. **Recursion vs Iteration**
+    - Recursion = simpler, elegant, but memory-heavy.
+    - Iteration(loops) = efficient, avoids stack overflow.
+11. **Tail Call Optimization (TCO)**
+
+    - TCO = optimization technique where the last nested recursive call is the last operation in a function.
+
+    ```js
+    function factorial(n, acc = 1) {
+      if (n === 0) return acc;
+      return factorial(n - 1, n * acc); // tail call (last call to function is the solution) -> no stacking up of call frames
+    }
+    factorial(5); // factorial(5) calls factorial(4, 5) -> factorial(3, 20) -> factorial(2, 60) -> factorial(1, 120) -> factorial(0, 120) -> return 120
+
+    function factorial(n) {
+      if (n === 0) return 1;
+      return n * factorial(n - 1); // NOT a tail call (must multiply after return)
+    }
+
+    factorial(5); // factorial(5) calls factorial(4) -> factorial(3) -> factorial(2) -> factorial(1) -> factorial(0) -> return 1 and then 5*(4*(3*(2*(1*1)))) = 120
+    ```
+
+12. **Security**
+
+- Stack overflow possible with deep recursion.
+  ```js
+  function recurse() {
+    recurse();
+  }
+  recurse(); // ❌ RangeError: Maximum call stack size exceeded
+  ```
 
 ---
 
@@ -1016,18 +1056,19 @@ function walk(node) {
 
 ## 👉 Mnemonic: **“Recursion = Base + Self-call, else Stack Fall.”**
 
-Would you like me to follow this with a **dedicated cheat card on Asynchronous Recursion** (e.g., recursion with `async/await` or `setTimeout` for large data to avoid stack overflow)?
-Here’s your **Concept Mastery Cheat Sheet** for **Immediately Invoked Function Expressions (IIFE)** — sharp, compact, and with **all gotchas grouped together**.
-
 ---
 
-# ⚡ JavaScript IIFE
+# ⚡ JavaScript IIFE (Immediately Invoked Function Expressions)
 
 ## **Concept:** Function expression that executes immediately after it’s defined.
 
 ### Syntax
 
 ```js
+
+(function expression)()
+(nested function expression)()() // example (fn(){ (fn2(){}) })(f1)(f2);
+
 // Classic
 (function () {
   console.log("run");
@@ -1112,7 +1153,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **Immediately Invoked Function
 
 ---
 
-## 👉 Mnemonic: **“IIFE = Expression + () + () → Runs instantly.”**
+## 👉 Mnemonic: **“IIFE = ( Function Expression ) () → Runs instantly.”**
 
 Do you want me to continue with a **dedicated cheat card on Modules (ES6 import/export)** next, since IIFEs were often a pre-ES6 way to simulate modular scope?
 Here’s your **Concept Mastery Cheat Sheet** for **Callback Functions** — compact, interview-ready, and with **all gotchas grouped together**.
@@ -1122,6 +1163,8 @@ Here’s your **Concept Mastery Cheat Sheet** for **Callback Functions** — com
 # 🔄 JavaScript Callback Functions
 
 ## **Concept:** A function passed as an argument to another function, executed later (synchronously or asynchronously).
+
+- Higher-Order Functions (HOFs) enable callbacks.
 
 ### Syntax
 
@@ -1191,6 +1234,9 @@ setTimeout(() => console.log("Runs later"), 1000);
    - Harder to debug (stack traces show `<anonymous>`).
 10. **Race conditions**
     - Multiple async callbacks updating same state cause inconsistent results.
+11. **Surprising quirks**
+    - Callback hell is not caused by callbacks themselves, but poor structuring.
+    - Even Promises use callbacks under the hood.
 
 ---
 
@@ -1212,7 +1258,7 @@ Here’s your **Concept Mastery Cheat Sheet** for **the `arguments` object** —
 
 ---
 
-# 📦 JavaScript `arguments` Object
+# 📦 JavaScript arguments Object
 
 ## **Concept:** Array-like object available inside **non-arrow functions** that holds all passed arguments.
 
@@ -1314,6 +1360,8 @@ Here’s your **Concept Mastery Cheat Sheet** for **Tail Call Optimization (TCO)
 
 ## **Concept:** An optimization where **a function call in tail position** (last action before return) reuses the current stack frame instead of creating a new one → avoids stack overflow.
 
+- TCO turns recursion into loop-like execution by not adding new stack frames.
+
 ### Syntax (Tail Position)
 
 ```js
@@ -1370,7 +1418,8 @@ fact(5); // 120
 6. **Spec vs real life**
    - ES6 spec mandates TCO, but most engines skipped for performance & debuggability reasons.
    - So writing code expecting TCO is unsafe today.
-7. **Manual trampolining often needed**
+7. Adding logging after tail call breaks optimization.
+8. **Manual trampolining often needed**
    - Simulate TCO using loops or “trampoline” functions.
 
 ---
