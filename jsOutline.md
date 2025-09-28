@@ -167,7 +167,7 @@ Here’s the **exhaustive syllabus** (from absolute scratch → expert). I’ve 
 
 ## 8. Error Handling & Debugging
 
-* `try…catch…finally`
+* `try…catch…finally `
 * Error objects
 * `Error`, `SyntaxError`, `TypeError`, `ReferenceError`
 * Throwing custom errors
