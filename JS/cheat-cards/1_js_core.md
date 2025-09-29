@@ -1,5 +1,16 @@
 # 📜 JS Cheat Card
 
+- [ECMAScript History](#ecmascript-history)
+- [Syntax](#syntax)
+- [Comments](#comments)
+- [Variables](#variables)
+- [Data Types](#data-types)
+- [Equality](#equality)
+- [Coercion](#coercion)
+- [Operators](#operators)
+- [Control Structures](#control-structures)
+- [Strict Mode](#strict-mode)
+
 ---
 
 ## Concepts:
