@@ -1,5 +1,4 @@
 # Index
-
 - [🔧 JavaScript Functions & Scope](#-javascript-functions--scope)
 - [🆚 Function Declarations vs Function Expressions](#-function-declarations-vs-function-expressions)
 - [🎛️ Default & Rest Parameters](#-default--rest-parameters)
@@ -12,13 +11,9 @@
 - [🔄 JavaScript Callback Functions](#-javascript-callback-functions)
 - [📦 JavaScript `arguments` Object](#-javascript-arguments-object)
 - [🔚 JavaScript Tail Call Optimization](#-javascript-tail-call-optimization)
-
 # 🔧 JavaScript Functions & Scope
-
 ## **Concept:** Functions encapsulate logic, define scope, and control variable visibility.
-
 ### Function Types
-
 ```js
 // Declaration (hoisted)
 function foo(a, b) {
@@ -41,23 +36,16 @@ const obj = new Function("a", "b", "return a+b");
   console.log("run");
 })();
 ```
-
 ---
-
 ### Types of Scope
-
 - **Global Scope** → accessible everywhere (window/globalThis).
 - **Function Scope** → vars inside function, not outside.
 - **Block Scope** → `let`/`const` (since ES6).
 - **Lexical Scope** → inner funcs access outer vars.
 - **Module Scope** → each ES module has its own top-level scope.
-
 ---
-
 ### Closures
-
 - Function **remembers variables** from outer scope even after outer function exits/closes.
-
 ```js
 function outer() {
   let x = 0;
@@ -67,11 +55,8 @@ const inc = outer();
 inc(); // 1
 inc(); // 2
 ```
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Hoisting quirks**
    - Function declarations hoisted fully.
    - Function expressions/arrow funcs not hoisted.
@@ -154,11 +139,8 @@ inc(); // 2
 13. **Eval/with interactions**
     - `eval` can create vars in enclosing scope (sloppy mode).
     - `with` alters scope chain unpredictably (deprecated).
-
 ---
-
 ### Best Practices
-
 - Prefer **function declarations** for hoisting; use **arrow functions** for callbacks.
 - Use `const` when assigning functions.
 - Avoid `var` to prevent leakage outside blocks.
@@ -166,23 +148,16 @@ inc(); // 2
 - Always include braces and return explicitly.
 - Don’t use Function constructor (`new Function`).
 - Keep scope shallow; modularize code.
-
 ---
-
 ## 👉 Mnemonic: **“Declare, Scope, Closure, This, Args, Return.”**
-
 # 🆚 Function Declarations vs Function Expressions
-
 ## **Concept:** Two main ways to define functions in JS, differing in hoisting, scope, and behavior.
-
 ### Function Declaration
-
 ```js
 function add(a, b) {
   return a + b;
 }
 ```
-
 - **Named** function.
 - Hoisted (usable before definition).
 - Exists in enclosing scope.
@@ -191,18 +166,14 @@ function add(a, b) {
   - **Service methods:** Core business logic functions in service layers.
   - **Library APIs:** Often exposed as declarations so they’re available anywhere in the file/module.
 - Provide stability and predictability — you know they exist before runtime.
-
 ---
-
 ### Function Expression
-
 ```js
 // anonymous
 const add = function (a, b) {};
 // named expression
 const mul = function multiply(a, b) {};
 ```
-
 - Can be **anonymous** or **named**.
 - Not hoisted (only variable declaration is).
 - Assigned to variable/property.
@@ -212,31 +183,22 @@ const mul = function multiply(a, b) {};
   - **Higher-order functions:** arr.map(x => x \* 2).
   - **Callbacks:** Passing inline logic without polluting global/module scope.
 - Provide flexibility and scoping control — used where functions are values, passed around, or need closure context.
-
 #### Arrow Function Expression
-
 ```js
 const sub = (a, b) => a - b;
 ```
-
 - Concise syntax, always expression.
 - Lexical `this`, no `arguments`, not constructible.
-
 ---
-
 ### Key Differences
-
 | Aspect             | Declaration       | Expression                                         |
 | ------------------ | ----------------- | -------------------------------------------------- |
 | **Hoisting**       | Fully hoisted     | Only variable hoisted (function not initialized)   |
 | **Naming**         | Always named      | Can be anonymous or named                          |
 | **When available** | Anywhere in scope | Only after assignment                              |
 | **Use case**       | Define main logic | Inline callbacks, closures, functional programming |
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Hoisting traps**
    ```js
    sayHi(); // works
@@ -281,26 +243,17 @@ const sub = (a, b) => a - b;
    export default function foo() { } // named -> foo
    export default function () { } // anonymous -> default
    ```
-
 ---
-
 ### Best Practices
-
 - Use **declarations** for top-level functions (readability + hoisting).
 - Use **expressions/arrow funcs** for inline callbacks, closures, functional composition.
 - Prefer **named function expressions** over anonymous for better stack traces.
 - Avoid relying on old block-declaration quirks; assume ES6 standard (block-scoped).
-
 ---
-
 ## 👉 Mnemonic: **“Declarations are Hoisted Leaders; Expressions are Inline Workers.”**
-
 # 🎛️ Default & Rest Parameters
-
 ## **Concept:** Special function parameter features (ES6) for flexibility.
-
 ### 1. Default Parameters
-
 - Values assigned **if argument is `undefined`**.
 - Evaluated **at call time**, left-to-right.
 - Can use earlier parameters as defaults.
@@ -308,7 +261,6 @@ const sub = (a, b) => a - b;
   - Static defaults: `function f(x = 5) {}`.
   - Dynamic defaults: `function f(x = Date.now()) {}`.
   - Dependent defaults: `function f(a = 1, b = a * 2) {}`.
-
 ```js
 function greet(name = "Guest", lang = "en") {
   return `Hi ${name}, lang=${lang}`;
@@ -316,60 +268,46 @@ function greet(name = "Guest", lang = "en") {
 greet(); // "Hi Guest, lang=en"
 greet("Kalidas"); // "Hi Kalidas, lang=en"
 ```
-
 ---
-
 ### 2. Rest Parameters
-
 - Collects “the rest” of args into an **array**.
 - Must be **last parameter**.
 - Types:
   - Pure rest (`function f(...args) {}`).
   - Mixed (`function f(a, b, ...others) {}`).
-
 ```js
 function sum(...nums) {
   return nums.reduce((a, b) => a + b, 0);
 }
 sum(1, 2, 3, 4); // 10
 ```
-
 - Replaces legacy `arguments` object in modern JS.
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Default param works only for `undefined`** -> `null`, `0`, `""` still override defaults because they are intentionally falsy values.
    - `greet(null)` → `"Hi null"` (not default).
    - `greet(undefined)` → `"Hi Guest"` (uses default).
 2. **Evaluation order**
    - Defaults evaluated **left to right**.
    - A param can use earlier ones:
-
 ```js
 function f(a = 1, b = a + 2) {
   return b;
 }
 f(); // 3
 ```
-
 - Using itself:
-
 ```js
 function f(a = a) {} // ❌ ReferenceError (TDZ)
 ```
-
 3. **Scope**
    - Defaults create a new scope for each call.
    - Can shadow outer vars.
 4. **Function.length**
    - Defaults reduce `.length` (count of params before first default).
-
 ```js
 (function (a, b = 2) {}).length; // 1
 ```
-
 5. **Rest param rules**
    - Must be last: `function f(...a, b){}` ❌ SyntaxError.
    - Only one rest param allowed.
@@ -387,32 +325,21 @@ function f(a = a) {} // ❌ ReferenceError (TDZ)
    f(); // 3
    ```
    - Defaults can be nested, but ordering still matters.
-
 ---
-
 ### Best Practices
-
 - Use **defaults** instead of `param = param || value` (avoids `0`/`""` bugs).
 - Use **rest** over `arguments` for clarity + real array methods.
 - Place required params first, defaults after.
 - Keep defaults simple (avoid heavy computation).
 - Prefer destructured defaults for config objects.
-
 ---
-
 ## 👉 Mnemonic: **“Default fills gaps, Rest gathers extras.”**
-
 Do you want me to also cover **Destructured Parameters with Defaults** as a separate cheat card (since it combines two concepts and has unique quirks)?
 Here’s your **Concept Mastery Cheat Sheet** for **Arrow Functions**, covering syntax, `this` binding, lack of `arguments`, and every gotcha in one place.
-
 ---
-
 # 🏹 JavaScript Arrow Functions
-
 ## **Concept:** Concise function expressions with lexical `this`, introduced in ES6.
-
 ### Syntax
-
 ```js
 // Basic
 const add = (a, b) => a + b;
@@ -428,22 +355,16 @@ const sum = (a, b) => {
 // Return object literal (wrap in parens)
 const makeObj = () => ({ a: 1, b: 2 });
 ```
-
 ---
-
 ### Key Features
-
 - Always **expressions**, never declarations.
 - No own `this` → inherits from enclosing scope (lexical).
 - No `arguments` object → use rest params `(...args)`.
 - No `super` or `new.target`.
 - Cannot be used as constructors (`new (()=>{})` → ❌ TypeError).
 - Shorter syntax for inline callbacks.
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **`this` binding**
    - Arrow inherits `this` from surrounding scope at time of creation.
    - Great for callbacks:
@@ -487,41 +408,27 @@ const makeObj = () => ({ a: 1, b: 2 });
 9. **Performance**
    - Tiny overhead in some engines vs declarations, but usually negligible.
 10. **Arrow vs normal function**
-
 - Arrow = “just pass through my parent’s context.”
 - Normal function = “I create my own mini-world with `this` and `arguments`.”
-
 ---
-
 ### Best Practices
-
 - ✅ Use arrows for **short callbacks**, array methods, lexical `this` needs.
 - ✅ Use rest params for variadics instead of `arguments`.
 - ❌ Don’t use arrows as object methods when you need dynamic `this`.
 - ❌ Don’t use arrows as constructors.
 - ✅ Wrap return objects in `({})`.
 - ✅ Prefer named functions for recursion / clearer stack traces.
-
 ---
-
 ## 👉 Mnemonic: **“Arrows are short, inherit `this`, and lack `arguments` & `new`.”**
-
 Would you like me to create a **separate cheat card for `this`** (covering all contexts: global, function, arrow, class, strict, event handlers)? That one is usually a big interview topic.
 Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order Functions**, made interview-ready and concise, with **all gotchas grouped in one block**.
-
 ---
-
 # 🏗️ JavaScript First-Class & Higher-Order Functions
-
 **Concepts:**
-
 - **First-Class Functions** → Functions when treated as values (can be stored, passed, returned).
 - **Higher-Order Functions (HOFs)** → Functions that take other functions as args OR return functions.
-
 ---
-
 ### First-Class Functions
-
 - Types:
   - Function stored in variable.
   - Function passed as argument.
@@ -548,11 +455,8 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
   ```js
   const arr = [(x) => x * 2, (y) => y + 1];
   ```
-
 ---
-
 ### Higher-Order Functions
-
 - Types:
   - Callback-based (setTimeout(fn, 1000)).
   - Function factories (makeMultiplier(2) returns new function).
@@ -573,18 +477,12 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
   const inc = (x) => x + 1;
   twice(inc)(5); // -> twice = (inc) => (x) => inc(inc(x)) -> inc(inc(5)) -> inc(6) -> 7
   ```
-
 ---
-
 **Mnemonic:**
-
 - First-class = “functions are variables.”
 - Higher-order = “functions manage other functions.”
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Context loss**
    - Passing object methods as callbacks loses `this`:
      ```js
@@ -651,46 +549,31 @@ Here’s your **Concept Mastery Cheat Sheet** for **First-Class & Higher-Order F
      [1, 2].forEach(async (x) => await doWork(x)); // not sequential
      ```
 10. **Surprising quirks**
-
 - Not all functions are HOFs, but all functions are first-class.
 - Even constructors are functions (first-class).
-
 11. **Examples**
-
 - Array methods (map, filter, reduce).
 - Event listeners (element.addEventListener("click", handler)).
 - Middleware in Express.js.
 - React hooks (useState, useEffect)
-
 ---
-
 ### Best Practices
-
 - ✅ Embrace first-class functions → pass, store, return freely.
 - ✅ Use named functions in HOFs for clarity.
 - ✅ Prefer modern async/await over deeply nested callbacks.
 - ✅ Document when functions return functions (currying, partials).
 - ❌ Don’t overuse HOFs in performance-critical loops.
 - ✅ Use `.map/.filter/.reduce` for clarity, but know their extra args.
-
 ---
-
 ## 👉 Mnemonic: **“First-Class = Treated like values. Higher-Order = Functions that use functions.”**
-
 Would you like me to follow this up with a **dedicated cheat card on Closures** (since they’re tightly tied to first-class + HOFs and often confused in interviews)?
 Here’s your **Concept Mastery Cheat Sheet** for **Function Scope vs Block Scope** in JavaScript — sharp, compact, and with **all gotchas grouped together**.
-
 ---
-
 # 📍 JavaScript Function Scope vs Block Scope
-
 ## **Concept:** Determines where variables are accessible in code.
-
 ### Function Scope
-
 - Variables visible **throughout function**, not outside.
 - `var` is **function-scoped**.
-
 ```js
 function test() {
   var x = 1;
@@ -701,14 +584,10 @@ function test() {
 }
 console.log(x); // ❌ ReferenceError
 ```
-
 ---
-
 ### Block Scope
-
 - Variables visible only **inside `{}`** (if, for, while, etc).
 - `let` and `const` are **block-scoped**.
-
 ```js
 {
   let y = 10;
@@ -717,24 +596,17 @@ console.log(x); // ❌ ReferenceError
 }
 console.log(y); // ❌ ReferenceError
 ```
-
 ---
-
 ### Temporal Dead Zone (TDZ)
-
 - `let`/`const` hoisted but **uninitialized** until declaration.
-
 ```js
 {
   console.log(a); // ❌ ReferenceError
   let a = 5;
 }
 ```
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **`var` leaks out of blocks**
    ```js
    if (true) {
@@ -775,32 +647,21 @@ console.log(y); // ❌ ReferenceError
 8. **Closures**
    - Inner functions capture variables by scope.
    - With `var`, all closures may share same reference (loop bug).
-
 ---
-
 ### Best Practices
-
 - ✅ Prefer **`let`/`const`** → block scope safer.
 - ✅ Use `const` by default, use `let` if reassignment needed.
 - ❌ Avoid `var`.
 - ✅ Be mindful of shadowing; keep variable names distinct.
 - ✅ Always declare variables at top of block for clarity.
-
 ---
-
 ## 👉 Mnemonic: **“Var is function-scoped leaky, Let/Const are block-scoped safe.”**
-
 Would you like me to also do a **dedicated Closures cheat card** next (since closures depend directly on understanding scope)?
 Here’s your **Concept Mastery Cheat Sheet** for **Closures** — complete with syntax, use-cases (data privacy, memoization, once-only), and every gotcha grouped in one block.
-
 ---
-
 # 🔒 JavaScript Closures
-
 ## **Concept:** A closure is a function that saves references to variables from its **lexical scope** even after the outer function has finished executing.
-
 ### Syntax
-
 ```js
 function outer() {
   let count = 0;
@@ -813,19 +674,13 @@ const inc = outer();
 inc(); // 1
 inc(); // 2
 ```
-
 ---
-
 ### Core Behavior
-
 - Inner function **captures references** to outer variables, not copies.
 - Preserves **lexical scope chain** at creation time.
 - Enables **persistent state** across calls.
-
 ---
-
 ### Common Use-Cases
-
 1. **Data Privacy / Encapsulation**
    ```js
    function counter() {
@@ -837,7 +692,6 @@ inc(); // 2
    ctr.get(); // 1 (c is private)
    ```
 2. **Memoization / Caching**
-
    ```js
    function memoize(fn) {
      const cache = {};
@@ -847,7 +701,6 @@ inc(); // 2
    square(4); // (cache[arg] = fn(arg)) -> cache[4] = fn(4) -> ((x) => x * x)(4) -> 16;
    // (function)(value) -> function(value);
    ```
-
 3. **Once-Only Execution**
    ```js
    function once(fn) {
@@ -876,11 +729,8 @@ inc(); // 2
      setTimeout(() => console.log(i), 1000);
    }
    ```
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Reference, not copy**
    - All closures share the same variable, not its value at creation.
    ```js
@@ -902,37 +752,25 @@ inc(); // 2
    - Closure captures by reference, so TDZ rules apply for `let/const`.
 7. **Eval / with interactions**
    - Can interfere with lexical scoping (sloppy mode).
-
 ---
-
 ### Best Practices
-
 - ✅ Use closures for **stateful functions** (counters, caches).
 - ✅ Prefer `let/const` in loops to avoid classic closure bugs.
 - ✅ Release closures holding large objects when not needed.
 - ✅ Use named functions when possible for better stack traces.
 - ❌ Avoid deep nesting; extract closures into helpers for clarity.
-
 ---
-
 ## 👉 Mnemonic: **“Closure = Function + Lexical Scope = Private Memory.”**
-
 Would you like me to now create a **dedicated cheat card on Currying & Partial Application** (since they are powerful closure patterns often asked in interviews)?
 Here’s your **Concept Mastery Cheat Sheet** for **Recursion** in JavaScript — compact, practical, and with **all gotchas grouped together**.
-
 ---
-
 # 🔁 JavaScript Recursion
-
 ## **Concept:** A function that calls itself until a base condition is met.
-
 - Solves Problems with nested, hierarchical, or repetitive structure
 - Execution rules:
   - Each recursive call adds a stack frame to the call stack.
   - Each recursive call has its own scope & local variables.
-
 ### Syntax
-
 ```js
 // Direct recursion
 function fact(n) {
@@ -947,30 +785,21 @@ function b(y) {
   if (y > 0) a(y - 1);
 }
 ```
-
 ---
-
 ### Types
-
 - **Direct** → function calls itself.
 - **Indirect/Mutual** → multiple functions call each other.
 - **Tail recursion** → recursive call is last statement (can be optimized in some langs, but not reliably in JS).
 - **Mutual recursion** → multiple functions call each other cyclically.
-
 ---
-
 ### Use-Cases
-
 1. **Math problems** → factorial, Fibonacci, GCD.
 2. **Tree/Graph traversal** → DOM, JSON, AST, file systems.
 3. **Divide & conquer** → quicksort, mergesort, binary search.
 4. **Backtracking** → N-Queens, Sudoku, pathfinding.
 5. **Flattening structures** → arrays, nested objects.
-
 ---
-
 ### Examples
-
 ```js
 // Factorial
 const factorial = (n) => (n <= 1 ? 1 : n * factorial(n - 1));
@@ -984,11 +813,8 @@ function walk(node) {
   node.childNodes.forEach(walk);
 }
 ```
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Base case missing** → infinite recursion → RangeError: Maximum call stack size exceeded.
 2. **Stack overflow** → JS doesn’t guarantee tail-call optimization. Large recursions can crash.
 3. **Inefficiency**
@@ -1014,26 +840,20 @@ function walk(node) {
     - Recursion = simpler, elegant, but memory-heavy.
     - Iteration(loops) = efficient, avoids stack overflow.
 11. **Tail Call Optimization (TCO)**
-
     - TCO = optimization technique where the last nested recursive call is the last operation in a function.
-
     ```js
     function factorial(n, acc = 1) {
       if (n === 0) return acc;
       return factorial(n - 1, n * acc); // tail call (last call to function is the solution) -> no stacking up of call frames
     }
     factorial(5); // factorial(5) calls factorial(4, 5) -> factorial(3, 20) -> factorial(2, 60) -> factorial(1, 120) -> factorial(0, 120) -> return 120
-
     function factorial(n) {
       if (n === 0) return 1;
       return n * factorial(n - 1); // NOT a tail call (must multiply after return)
     }
-
     factorial(5); // factorial(5) calls factorial(4) -> factorial(3) -> factorial(2) -> factorial(1) -> factorial(0) -> return 1 and then 5*(4*(3*(2*(1*1)))) = 120
     ```
-
 12. **Security**
-
 - Stack overflow possible with deep recursion.
   ```js
   function recurse() {
@@ -1041,34 +861,22 @@ function walk(node) {
   }
   recurse(); // ❌ RangeError: Maximum call stack size exceeded
   ```
-
 ---
-
 ### Best Practices
-
 - ✅ Always define a clear **base case**.
 - ✅ Use **iteration** when recursion depth may be large.
 - ✅ Memoize results for heavy recursive problems.
 - ✅ Use named functions for better stack traces.
 - ✅ For async tasks, use `async/await` recursion carefully.
-
 ---
-
 ## 👉 Mnemonic: **“Recursion = Base + Self-call, else Stack Fall.”**
-
 ---
-
 # ⚡ JavaScript IIFE (Immediately Invoked Function Expressions)
-
 ## **Concept:** Function expression that executes immediately after it’s defined.
-
 ### Syntax
-
 ```js
-
 (function expression)()
 (nested function expression)()() // example (fn(){ (fn2(){}) })(f1)(f2);
-
 // Classic
 (function () {
   console.log("run");
@@ -1082,22 +890,15 @@ function walk(node) {
   return n <= 1 ? 1 : n * fact(n - 1);
 })(5);
 ```
-
 ---
-
 ### Purpose
-
 - Create a **new scope** to avoid polluting global namespace.
 - Encapsulate private variables.
 - Initialize modules/configs.
 - Run once-only code (setup, polyfills).
-
 ---
-
 ### Variants
-
 - **Unary operator trick** (forces expression):
-
 ```js
 !(function () {
   console.log("hi");
@@ -1106,20 +907,15 @@ function walk(node) {
   console.log("hi");
 })();
 ```
-
 - **Async IIFE** (ES2017+):
-
 ```js
 (async () => {
   const res = await fetch("/data");
   console.log(await res.json());
 })();
 ```
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Declaration vs Expression**
    - `function foo(){}()` ❌ SyntaxError (declaration not callable directly).
    - Wrap in `()` to turn into expression: `(function foo(){})()`.
@@ -1140,34 +936,22 @@ function walk(node) {
    - Async IIFE returns a promise — forgetting to `await` it can cause race bugs.
 7. **Recursion in IIFE**
    - Anonymous IIFE cannot self-call recursively; must be named.
-
 ---
-
 ### Best Practices
-
 - ✅ Use for one-time setup, initialization, or isolating scope.
 - ✅ Prefer **named IIFEs** for recursion & debugging.
 - ✅ Always place semicolon before starting an IIFE.
 - ❌ Don’t use IIFEs for everything; modern `let/const` + modules reduce need.
 - ✅ Use async IIFEs for top-level `await` in non-module scripts.
-
 ---
-
 ## 👉 Mnemonic: **“IIFE = ( Function Expression ) () → Runs instantly.”**
-
 Do you want me to continue with a **dedicated cheat card on Modules (ES6 import/export)** next, since IIFEs were often a pre-ES6 way to simulate modular scope?
 Here’s your **Concept Mastery Cheat Sheet** for **Callback Functions** — compact, interview-ready, and with **all gotchas grouped together**.
-
 ---
-
 # 🔄 JavaScript Callback Functions
-
 ## **Concept:** A function passed as an argument to another function, executed later (synchronously or asynchronously).
-
 - Higher-Order Functions (HOFs) enable callbacks.
-
 ### Syntax
-
 ```js
 // Synchronous callback
 function greet(name, cb) {
@@ -1178,27 +962,18 @@ greet("Kalidas", () => console.log("Done"));
 // Asynchronous callback
 setTimeout(() => console.log("Runs later"), 1000);
 ```
-
 ---
-
 ### Use-Cases
-
 - Event handling (`button.addEventListener("click", cb)`)
 - Array methods (`map`, `filter`, `reduce`, `forEach`)
 - Async operations (`fs.readFile("file.txt", cb)`)
 - Custom control flow (middleware, pipelines)
-
 ---
-
 ### Types
-
 - **Synchronous** → executed immediately (`map`, `filter`).
 - **Asynchronous** → executed later (I/O, timers, network).
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Callback hell (Pyramid of Doom)**
    - Deep nesting of callbacks → unreadable, hard to maintain.
    - Fixed by Promises/async–await.
@@ -1237,33 +1012,22 @@ setTimeout(() => console.log("Runs later"), 1000);
 11. **Surprising quirks**
     - Callback hell is not caused by callbacks themselves, but poor structuring.
     - Even Promises use callbacks under the hood.
-
 ---
-
 ### Best Practices
-
 - ✅ Use **named functions** for clarity and debugging.
 - ✅ Always handle errors in async callbacks.
 - ✅ Avoid deep nesting → refactor into Promises/async-await.
 - ✅ Remove event listeners after use to prevent leaks.
 - ✅ Document the expected signature `(args…)` of callbacks.
 - ❌ Don’t rely on execution order in async callbacks.
-
 ---
-
 ## 👉 Mnemonic: **“Callback = Function Later, Beware Hell & Context.”**
-
 Would you like me to follow this with a **dedicated cheat card on Promises** (since they’re the modern evolution of callbacks and interviewers love comparing them)?
 Here’s your **Concept Mastery Cheat Sheet** for **the `arguments` object** — compact, full coverage, and with **all gotchas grouped together**.
-
 ---
-
 # 📦 JavaScript arguments Object
-
 ## **Concept:** Array-like object available inside **non-arrow functions** that holds all passed arguments.
-
 ### Syntax
-
 ```js
 function demo(a, b) {
   console.log(arguments[0]); // first arg
@@ -1271,23 +1035,16 @@ function demo(a, b) {
 }
 demo(10, 20, 30); // 10, 3
 ```
-
 ---
-
 ### Properties
-
 - **`arguments.length`** → number of arguments passed.
 - **`arguments[i]`** → access by index.
 - **`arguments.callee`** → reference to current function (❌ forbidden in strict mode).
 - **Not an array** → no `map`, `filter` directly. Convert with `[...arguments]` or `Array.from(arguments)`.
-
 ---
-
 ### Relationship with Parameters
-
 - **Sloppy mode**: arguments & named params are linked (changes reflect both).
 - **Strict mode**: arguments & params are decoupled.
-
 ```js
 function f(a) {
   a = 99;
@@ -1295,11 +1052,8 @@ function f(a) {
 }
 f(1); // sloppy: 99, strict: 1
 ```
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Not available in arrow functions**
    ```js
    const f = () => console.log(arguments); // ❌ ReferenceError
@@ -1336,34 +1090,22 @@ f(1); // sloppy: 99, strict: 1
    - Declaring a variable/param named `arguments` shadows the object.
 10. **ES6 preference**
     - Modern JS favors **rest parameters (`...args`)** over `arguments`.
-
 ---
-
 ### Best Practices
-
 - ✅ Use **rest params (`...args`)** for modern code.
 - ✅ Convert `arguments` with `[...arguments]` or `Array.from`.
 - ❌ Don’t use `arguments.callee`.
 - ✅ Be aware of strict vs sloppy differences.
 - ✅ Use named functions instead of relying on `callee`.
-
 ---
-
 ## 👉 Mnemonic: **“Arguments = Array-like past, Rest = modern future.”**
-
 Do you want me to next build a **cheat card on Rest Parameters vs `arguments`** (direct comparison, since interviewers often ask why rest is better)?
 Here’s your **Concept Mastery Cheat Sheet** for **Tail Call Optimization (TCO)** in JavaScript — focusing on the ES6 spec, reality, and all gotchas grouped together.
-
 ---
-
 # 🔚 JavaScript Tail Call Optimization
-
 ## **Concept:** An optimization where **a function call in tail position** (last action before return) reuses the current stack frame instead of creating a new one → avoids stack overflow.
-
 - TCO turns recursion into loop-like execution by not adding new stack frames.
-
 ### Syntax (Tail Position)
-
 ```js
 "use strict"; // required per spec
 function fact(n, acc = 1) {
@@ -1372,11 +1114,8 @@ function fact(n, acc = 1) {
 }
 fact(5); // 120
 ```
-
 ---
-
 ### ES6 Spec Notes
-
 - Defined in **ECMAScript 2015 (ES6)**.
 - Tail call must be:
   1. In **strict mode**.
@@ -1384,19 +1123,13 @@ fact(5); // 120
   3. Last action of the function (`return f(...)`).
   4. Not wrapped in an operation (`return 1 + f(x)` ❌).
 - Replaces current frame instead of adding new one.
-
 ---
-
 ### Benefits
-
 - Prevents stack overflow on deep recursion.
 - Improves memory efficiency.
 - Enables functional-style recursion for large inputs.
-
 ---
-
 ### Gotchas ⚠️ (Exhaustive)
-
 1. **Not widely implemented**
    - Safari (WebKit) implemented **proper TCO**.
    - V8 (Chrome/Node) & SpiderMonkey (Firefox) **do not support** TCO.
@@ -1421,11 +1154,8 @@ fact(5); // 120
 7. Adding logging after tail call breaks optimization.
 8. **Manual trampolining often needed**
    - Simulate TCO using loops or “trampoline” functions.
-
 ---
-
 ### Workarounds (Without Native TCO)
-
 ```js
 // Trampoline technique
 function trampoline(fn) {
@@ -1439,18 +1169,12 @@ function fact(n, acc = 1) {
 }
 trampoline(fact(100000)); // works without overflow
 ```
-
 ---
-
 ### Best Practices
-
 - ✅ Don’t rely on spec TCO in production → assume not supported.
 - ✅ Use iteration for very deep recursion in JS.
 - ✅ Use trampolines for safe recursive patterns.
 - ✅ Use memoization/loops for performance-critical recursive tasks.
-
 ---
-
 ## 👉 Mnemonic: **“Tail Call = Return Call Only, but Engines Rarely Honor It.”**
-
 Do you want me to follow this with a **dedicated cheat card on Recursion Alternatives** (loops, trampolines, generators) — since interviewers often ask “what if JS doesn’t optimize tail calls”?
