@@ -680,6 +680,7 @@ for(...) { break outer; }
 
     - `delete Object.prototype` → ❌ TypeError.
     - `delete variableName` → ❌ SyntaxError.
+    - `delete functionName` → ❌ SyntaxError.
 
 4.  Duplicate parameter names
     ```js
@@ -722,7 +723,7 @@ for(...) { break outer; }
 
 ---
 
-## **Best Practices:**
+## Best Practices:
 
 - ECMAScript History
   - Check engine support: [MDN compat tables](https://developer.mozilla.org/).
