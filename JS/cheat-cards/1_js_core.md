@@ -32,6 +32,13 @@
 - **ES2023:** Array `findLast`, Hashbang `#!`.
 - **ES2024:** `Promise.withResolvers`, `Atomics.waitAsync`, iterator helpers.
 
+#### alert⚠️
+
+- ECMAScript History
+  - Browser vendors lag in adoption.
+  - Not every ES feature lands in Node/browser at same time → check compatibility.
+  - ES versions after 2015 are **yearly** (TC39 process).
+
 ---
 
 ### **Syntax:**
@@ -533,42 +540,42 @@ parseInt("101", 2); // 5 (binary parsing)
 
 #### Conditionals
 
-                           ```js
-                           if (cond) { ... }
-                           else if (cond) { ... }
-                           else { ... }
-                           switch (expr) {
-                           case val: ...; break;
-                           default: ...
-                           }
-                           ```
+```js
+if (cond) { ... }
+else if (cond) { ... }
+else { ... }
+switch (expr) {
+case val: ...; break;
+default: ...
+}
+```
 
 #### Loops
 
-                           ```js
-                           for (let i=0; i<5; i++) { ... }
-                           while (cond) { ... }
-                           do { ... } while (cond) // executes at least once, even if condition false.
-                           for (const val of iterable) { ... } // iterable array
-                           for (const key in enumerable) { ... } // enumerable object keys
-                           ```
+```js
+for (let i=0; i<5; i++) { ... }
+while (cond) { ... }
+do { ... } while (cond) // executes at least once, even if condition false.
+for (const val of iterable) { ... } // iterable array
+for (const key in enumerable) { ... } // enumerable object keys
+```
 
 #### Jumps
 
-                           ```js
-                           break;      // exit loop/switch
-                           continue;   // skip current loop iteration
-                           return val; // exit function
-                           throw err;  // raise exception
-                           ```
+```js
+break;      // exit loop/switch
+continue;   // skip current loop iteration
+return val; // exit function
+throw err;  // raise exception
+```
 
 #### Exception Handling
 
-                           ```js
-                           try { ... }
-                           catch (e) { ... }
-                           finally { ... }
-                           ```
+```js
+try { ... }
+catch (e) { ... }
+finally { ... }
+```
 
 #### alert⚠️
 
@@ -701,18 +708,6 @@ for(...) { break outer; }
     ```
 11. Silent errors become thrown - E.g., assigning to `NaN = 5` throws TypeError.
 12. Function declarations in blocks - Strict mode disallows block-scoped function declarations in older engines (now standardized with ES6).
-
----
-
----
-
-## **Gotchas:**
-
-- ECMAScript History
-  - Browser vendors lag in adoption.
-  - Not every ES feature lands in Node/browser at same time → check compatibility.
-  - ES versions after 2015 are **yearly** (TC39 process).
-- Syntax & Statements
 
 ---
 
