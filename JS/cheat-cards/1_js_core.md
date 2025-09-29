@@ -704,16 +704,17 @@ for (let i = 0; i < 3; i++) setTimeout(() => console.log(i)); // 0,1,2
   - Always return `Error` objects, not strings, with `throw`.
   - Catch only what you can handle; don’t swallow errors silently.
 - Strict Mode
+
   - Always use `"use strict";` in legacy scripts & Write new code assuming strict mode.
   - In ES6+ modules, strict mode is **enabled by default** (no need to declare).
 
-## Mnemonics
+    ## Mnemonics
 
-- “JavaScript” = language;
-- “ECMAScript” = standard.
-- “3 started, 5 strict, 6 exploded, yearly drip after.”
-- “var = legacy, let = change, const = default.”
-- Primitives are 7 (string, number, boolean, null, undefined, symbol, bigint); Everything else = object.
-- “Strict = No Globals, No Duplicates, No Octals, Safer Eval, Safer This.”
+    - “JavaScript” = language;
+    - “ECMAScript” = standard.
+    - “3 started, 5 strict, 6 exploded, yearly drip after.”
+    - “var = legacy, let = change, const = default.”
+    - Primitives are 7 (string, number, boolean, null, undefined, symbol, bigint); Everything else = object.
+    - “Strict = No Globals, No Duplicates, No Octals, Safer Eval, Safer This.”
 
 ---
