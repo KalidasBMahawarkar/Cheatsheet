@@ -305,8 +305,10 @@ const obj = new Function("a", "b", "return a+b");
 - Passing a function doesn’t execute it → calling `fn()` executes it.
   - Reference vs Invocation
     ```js
-    setTimeout(sayHi(), 1000); // ❌ sayHi() runs now, passes return value immediately without waiting for 1000ms
-    setTimeout(sayHi, 1000); // ✅ setTimeout runs later as only reference is passed to it
+    // ❌ sayHi() runs now, passes return value immediately without waiting for 1000ms
+    setTimeout(sayHi(), 1000);
+    // ✅ setTimeout runs later as only reference is passed to it
+    setTimeout(sayHi, 1000);
     ```
 - Passing object methods as callbacks loses `this`:
   ```js
@@ -431,8 +433,10 @@ inc(); // 2
      const cache = {};
      return (arg) => cache[arg] ?? (cache[arg] = fn(arg));
    }
-   const square = memoize((x) => x * x); // memoize fun executes and ref cache is passed to square with returned function
-   square(4); // (cache[arg] = fn(arg)) -> cache[4] = fn(4) -> ((x) => x * x)(4) -> 16;
+   // memoize fun executes and ref cache is passed to square with returned function
+   const square = memoize((x) => x * x);
+   square(4);
+   // (cache[arg] = fn(arg)) -> cache[4] = fn(4) -> ((x) => x * x)(4) -> 16;
    // (function)(value) -> function(value);
    ```
 3. **Once-Only Execution**
@@ -629,7 +633,10 @@ function b(y) {
     return 1 + factorial(x); // ❌ not tail position
     return factorial(x) * 2; // ❌ not tail position
   }
-  factorial(5); // factorial(5) calls factorial(4) -> factorial(3) -> factorial(2) -> factorial(1) -> factorial(0) -> return 1 and then 5*(4*(3*(2*(1*1)))) = 120
+  factorial(5);
+  // factorial(5) calls factorial(4) -> factorial(3) -> factorial(2)
+  // -> factorial(1) -> factorial(0) -> return 1
+  // and then 5*(4*(3*(2*(1*1)))) = 120
   ```
   ```js
   // Recursive function

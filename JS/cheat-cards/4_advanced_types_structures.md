@@ -1,151 +1,12 @@
-# 🧩 JavaScript Advanced Types & Structures — Cheat Card
+# JavaScript Advanced Types & Structures
 
-## **Concept:** Specialized data structures introduced in ES6+ for efficient storage, lookup, and memory control.
+## Concepts
 
-### Map
+### Arrays
 
-```js
-const m = new Map();
-m.set("a", 1);
-m.set({}, 2);
-m.get("a"); // 1
-```
+- Ordered, zero-indexed collections of values. Special type of object with powerful built-in methods.
 
-- Key → any type.
-- Maintains insertion order.
-- `.size`, `.has`, `.delete`, `.clear`.
-
----
-
-### WeakMap
-
-```js
-const wm = new WeakMap();
-let obj = {};
-wm.set(obj, "secret");
-```
-
-- Keys → **objects only**.
-- Weak references (GC-eligible).
-- Not iterable.
-
----
-
-### Set
-
-```js
-const s = new Set([1, 2, 2, 3]);
-s.has(2); // true
-```
-
-- Stores **unique values**.
-- Insertion order preserved.
-- `.size`, `.add`, `.delete`, `.clear`.
-
----
-
-### WeakSet
-
-```js
-const ws = new WeakSet();
-let obj = {};
-ws.add(obj);
-```
-
-- Values → **objects only**.
-- Weak references.
-- Not iterable.
-
----
-
-### Typed Arrays & Buffers
-
-```js
-const buf = new ArrayBuffer(16); // raw bytes
-const view = new Uint8Array(buf);
-view[0] = 255; // binary storage
-```
-
-- For binary data.
-- Types: `Int8Array`, `Uint8Array`, `Float32Array`, etc.
-- Backed by `ArrayBuffer` + `DataView`.
-
----
-
-### Other Structures
-
-- **Date** → `new Date()`, timestamps.
-- **RegExp** → `/pattern/flags`.
-- **Error types** → `Error`, `TypeError`, `SyntaxError`, etc.
-- **BigInt** → integers beyond 2^53-1.
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Map vs Object**
-   - Objects stringify keys; Maps keep key identity.
-   - `map.set({},1); map.set({},2);` → 2 entries.
-2. **Set uniqueness rules**
-   - Uses SameValueZero: `NaN` equal to `NaN`, `0` = `-0`.
-3. **WeakMap/WeakSet**
-   - Keys must be objects.
-   - No `.size`, `.keys`, `.forEach`.
-   - Entries removed when object key GC’ed.
-4. **Iteration differences**
-   - Map/Set → iterable directly (`for…of`).
-   - WeakMap/WeakSet → not iterable.
-5. **Serialization**
-   - JSON ignores Map/Set/WeakMap/WeakSet.
-   - Must convert (`Array.from(map)` / `[...set]`).
-6. **Typed Arrays quirks**
-   - Fixed length (cannot resize).
-   - Endianness matters in cross-system binary data.
-   - Out-of-bounds access returns `undefined`, not error.
-7. **Performance traps**
-   - Deep prototype chains slower than Map lookups.
-   - Overusing Sets for tiny lists slower than arrays.
-8. **RegExp quirks**
-   - Statefulness with `lastIndex` in global/sticky regex.
-   - `test` on global regex advances index.
-9. **BigInt**
-   - Cannot mix with numbers directly (`1n + 1` ❌).
-   - JSON.stringify(BigInt) → ❌ TypeError.
-
----
-
-### Best Practices
-
-- ✅ Use **Map** for dynamic key-value collections.
-- ✅ Use **Set** for uniqueness.
-- ✅ Use **WeakMap/WeakSet** for private data & memory-sensitive caching.
-- ✅ Use **TypedArrays** for binary/large numeric data.
-- ✅ Always convert before serialization.
-- ✅ Keep usage clear — Objects for structure, Maps/Sets for collections.
-
----
-
-👉 Mnemonic:
-
-- **Map = Key store**,
-- **Set = Unique bag**,
-- **Weak = GC-friendly**,
-- **Typed = Binary data**.
-
----
-
-## Would you like me to **split this into separate cheat cards per structure (Map, WeakMap, Set, WeakSet, Typed Arrays)** so you get ultra-focused cards for each?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **JavaScript Arrays** — fully loaded with syntax, methods, and **all gotchas grouped together**.
-
-# 📦 JavaScript Arrays — Cheat Card
-
-**Concept:**
-Ordered, zero-indexed collections of values. Special type of object with powerful built-in methods.
-
----
-
-### Creation
+#### Syntax
 
 ```js
 const arr1 = [1, 2, 3];
@@ -154,228 +15,119 @@ const arr3 = Array.of(1, 2, 3); // [1,2,3]
 const arr4 = Array.from("abc"); // ["a","b","c"]
 ```
 
----
-
-### Core Properties
+#### Properties
 
 - **Index-based access** → `arr[0]`
 - **Length** → `arr.length` (mutable)
 - **Sparse arrays** allowed (`[ , , 3]`)
 
----
-
-### Mutator Methods
+#### Methods (mutating - change the existing array and return)
 
 ```js
-push(4), pop(); // add/remove end
-shift(), unshift(0); // add/remove start
-splice(1, 2, "x"); // remove/replace/insert
+push(4), pop(); // add-remove END
+shift(), unshift(0); // add-remove START
+splice(1, 2, "x"); // remove-replace-insert
 sort(), reverse();
 fill(0), copyWithin();
 ```
 
----
-
-### Accessor Methods (non-mutating)
+#### Methods (non-mutating - create a new array and return a new array)
 
 ```js
-concat(), slice(), join(), includes(), indexOf(), lastIndexOf();
+concat(), slice(), join(), includes(), indexOf(), lastIndexOf(),toReversed(), toSorted(), toSpliced(), with();
 ```
 
----
-
-### Iteration / Functional
+### Iteration / Functional Methods
 
 ```js
-forEach(x=>...), map(x=>...), filter(x=>...), reduce((a,b)=>...), reduceRight()
-some(x=>...), every(x=>...)
-find(x=>...), findIndex(x=>...), flat(), flatMap()
+// Executes callback for each element (no return)
+[].forEach((element, index, array) => ... undefined ),
+
+// Transforms each element → returns new array
+[].map((element, index, array) => ... new array),
+
+// Keeps elements where callback → truthy → returns new array
+[].filter((element, index, array) => ... new array),
+
+// Maps each element, then flattens result one level → returns new array
+[].flatMap((element, index, array) => ... new array),
+
+// Returns first element that satisfies condition (or undefined)
+[].find((element, index, array) => ... element ),
+
+// Reduces array and accumulates values → single value (left → right)
+// If no initialValue → first element of array used as initialValue.
+[].reduce((accumulator, currentValue, currentIndex, array) => ... , initialValue ),
+
+// Same as reduce but accumulates values from right to left
+[].reduceRight((accumulator, currentValue, currentIndex, array) => ... , initialValue ),
+
+// Returns index of first element that satisfies condition (or -1)
+[].findIndex((element, index, array) => ... index ),
+
+// Returns true if any element passes the test → boolean
+// on empty array returns false
+[].some((element, index, array) => ... boolean ),
+
+// Returns true if all elements pass the test → boolean
+// on empty array returns true
+[].every((element, index, array) => ... boolean ),
+
+// Flattens nested arrays up to given depth → returns new array
+[].flat(depth = 1) ,
+
 ```
 
----
-
-### ES2023+ Goodies
-
-- `.at(-1)` → last element.
-- `toReversed(), toSorted(), toSpliced(), with()` → return **new arrays** without mutating.
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Sparse arrays**
-   - `new Array(3)` → `[ <3 empty items> ]`.
-   - Methods may skip empty slots (e.g., `map`).
-2. **Length behavior**
-   - `arr.length=0` clears array.
-   - Setting smaller length truncates.
-   - Larger length creates holes.
-3. **Type coercion in sort()**
-   - Default `sort()` converts to strings.
-   - `["10","2"].sort()` → `["10","2"]`.
-   - Fix: `arr.sort((a,b)=>a-b)`.
-4. **delete operator**
-   - `delete arr[0]` leaves a hole, doesn’t shrink length.
-5. **Performance**
-   - Avoid sparse arrays for performance.
-   - Use typed arrays for large numeric datasets.
-6. **`for...in` vs `for...of`**
-   - `for...in` iterates keys (indices as strings, includes inherited).
-   - `for...of` iterates values (correct).
-7. **Comparison**
-   - Arrays are objects; compared by reference.
-   - `[1]==[1]` → false.
-8. **Copy pitfalls**
-   - Spread (`[...arr]`) = shallow copy.
-   - Nested objects still reference same memory.
-   - Use `structuredClone` for deep copies.
-9. **Negative indices**
-   - `arr[-1]` is not last element, it’s a property.
-   - Use `.at(-1)` instead.
-10. **Array-like objects**
-    - `arguments`, `NodeList` look like arrays but lack methods.
-    - Convert: `Array.from(arrayLike)`.
-
----
-
-### Best Practices
-
-- ✅ Use array literals `[]` instead of `new Array()`.
-- ✅ Use `.at(-1)` for last element instead of hacks.
-- ✅ Always provide compare function to `sort()`.
-- ✅ Use `map/filter/reduce` for clarity, but avoid in performance-critical loops.
-- ✅ Convert array-likes with `Array.from()`.
-- ✅ For immutability, prefer new ES2023 methods (`toSorted`, `with`, etc.).
-
----
-
-## 👉 Mnemonic: **“Array = Ordered list, mind the holes, always copy carefully.”**
-
-## Would you like me to also prepare a **cheat card on Array Iteration Patterns** (classic loops vs `forEach`, `map`, `reduce`, `for...of`), since interviewers often test which to use when?
-
-## Here’s your **Concept Mastery Cheat Sheet** for the most important **Array Functional Methods** — `map`, `filter`, `reduce`, `find`, `some`, `every` — concise, with **all gotchas grouped together**.
-
-# 🛠️ JavaScript Array Functional Methods — Cheat Card
-
----
-
-### `map()`
+#### Other Methods
 
 ```js
-[1, 2, 3].map((x) => x * 2); // [2,4,6]
+at(-1) → last element.
 ```
 
-- Transforms each element → returns **new array**.
-- Callback: `(element, index, array)`
+#### alert⚠️
+
+- Length:
+  - `arr.length=0` clears array.
+  - Setting smaller length truncates.
+  - Larger length creates holes.
+- Sort:
+  - Default `sort()` converts to strings.
+  - `["10","2"].sort()` → `["10","2"]`.
+  - Fix: `arr.sort((a,b)=>a-b)`.
+- Delete:
+  - `delete arr[0]` leaves a hole, doesn’t shrink length.
+- Comparison:
+  - Arrays are objects; compared by reference.
+  - `[1]==[1]` → false.
+- Copy:
+  - Spread (`[...arr]`) = shallow copy.
+  - Nested objects still reference same memory.
+  - Use `structuredClone` for deep copies.
+- Negative indices:
+  - `arr[-1]` is not last element, it’s a property.
+  - Use `.at(-1)` instead.
+
+## Best Practices
+
+- Use array literals `[]` instead of `new Array()`.
+- Use `.at(-1)` for last element instead of hacks.
+- Always provide compare function to `sort()`.
+- Use `map/filter/reduce` for clarity, but avoid in performance-critical loops.
+- Convert array-likes with `Array.from()`.
+
+- Iteration
+  - Use `map` for transformation, `filter` for selection.
+  - Always provide `initialValue` in `reduce`.
+  - Use `find` for first match, `filter` for multiple.
+  - Don’t use `map` if you’re not returning a value (use `forEach`).
+  - Use `some`/`every` for readability over manual loops.
+  - Be cautious with sparse arrays [ , , ]; prefer initializing fully.
 
 ---
 
-### `filter()`
+## Mnemonic
 
-```js
-[1, 2, 3, 4].filter((x) => x % 2 === 0); // [2,4]
-```
-
-- Keeps elements where callback → truthy.
-- Returns **new array**.
-
----
-
-### `reduce()`
-
-```js
-[1, 2, 3].reduce((acc, val) => acc + val, 0); // 6
-```
-
-- Accumulates values → single result.
-- Callback: `(acc, current, index, array)`
-- Optional **initialValue**.
-
----
-
-### `find()`
-
-```js
-[1, 2, 3, 4].find((x) => x > 2); // 3
-```
-
-- Returns **first matching element** or `undefined`.
-
----
-
-### `some()`
-
-```js
-[1, 2, 3].some((x) => x > 2); // true
-```
-
-- Returns true if **any element** passes test.
-
----
-
-### `every()`
-
-```js
-[1, 2, 3].every((x) => x > 0); // true
-```
-
-- Returns true if **all elements** pass test.
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Original array not mutated**
-   - Except if callback mutates elements.
-2. **Callback args**
-   - All get `(element, index, array)` — forgetting can cause bugs.
-   - Example:
-     ```js
-     ["1", "2", "3"].map(parseInt); // [1,NaN,NaN]
-     ```
-     (`parseInt` uses 2nd arg as radix).
-3. **Sparse arrays**
-   - Methods skip empty slots:
-     ```js
-     new Array(3).map(() => 1); // [ , , ]
-     ```
-4. **reduce() quirks**
-   - If no initialValue → first element used as accumulator.
-   - On empty array without initialValue → ❌ TypeError.
-5. **find()**
-   - Only first match returned. To get all, use `filter`.
-6. **some()/every() short-circuit**
-   - `some` stops at first true.
-   - `every` stops at first false.
-7. **Performance**
-   - Chaining (`arr.map(...).filter(...)`) creates intermediate arrays.
-   - Use `reduce` for single-pass operations if perf critical.
-8. **thisArg**
-   - All methods accept optional `thisArg` as second parameter. Rarely used, but important:
-     ```js
-     arr.map(fn, thisArg);
-     ```
-9. **Mutation inside callbacks**
-   - Can lead to surprising results if you push/modify during iteration.
-10. **every() on empty arrays**
-    - Returns `true` (vacuous truth).
-    - `some()` on empty array returns `false`.
-
----
-
-### Best Practices
-
-- ✅ Use `map` for transformation, `filter` for selection.
-- ✅ Always provide `initialValue` in `reduce`.
-- ✅ Use `find` for first match, `filter` for multiple.
-- ✅ Don’t use `map` if you’re not returning a value (use `forEach`).
-- ✅ Use `some`/`every` for readability over manual loops.
-- ✅ Be cautious with sparse arrays; prefer initializing fully.
-
----
-
-👉 Mnemonic:
-
+- “Array = Ordered list, mind the holes, always copy carefully.”
 - **map = transform**
 - **filter = keep**
 - **reduce = fold into one**
@@ -385,9 +137,17 @@ find(x=>...), findIndex(x=>...), flat(), flatMap()
 
 ---
 
-## Would you like me to also make a **separate cheat card just for `reduce()`** (since it’s the trickiest of these, with many interview use-cases like flattening, grouping, memoization)?
+---
 
-## Here’s your **Concept Mastery Cheat Sheet** for **Sparse Arrays** in JavaScript — short, complete, with **all gotchas grouped together**.
+---
+
+---
+
+---
+
+---
+
+---
 
 # 🕳️ JavaScript Sparse Arrays — Cheat Card
 
