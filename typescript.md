@@ -21,9 +21,15 @@
 | Union Type                    | One of several types                           | `let val: string\|number;`                            |
 | Intersection Type             | Combine multiple types                         | `type Full = A & B;`                                  |
 | Type Alias                    | Custom name for type                           | `type ID = string\|number;`                           |
-| Interface                     | Blueprint for object                           | `interface User { name: string; age: number; }`       |
 | Readonly                      | Prevent modification                           | `readonly id: number;`                                |
 | Optional                      | May be absent                                  | `age?: number;`                                       |
+
+| Interface                                                                              | Class                                                                                         |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Defines **what** an object should look like                                            | Defines **how** an object behaves                                                             |
+| Used for **type-checking and contracts**                                               | Used for **object creation and execution**                                                    |
+| Exists **only at compile-time** (erased in JS)                                         | Exists **at runtime** (becomes JS class/function)                                             |
+| `interface User { name: string; age: number; greet(): void; // method signature only}` | `class UserClass { constructor(public name: string, public age: number) {}; greet(): void {}` |
 
 ⚠️ **Gotchas:**
 
