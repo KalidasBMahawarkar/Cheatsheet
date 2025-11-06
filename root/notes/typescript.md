@@ -60,18 +60,19 @@
 
 ## 🧩 3. **Classes & OOP**
 
-| Concept                  | Explanation                  | Example                                         |
-| ------------------------ | ---------------------------- | ----------------------------------------------- |
-| Class                    | Defines structure & behavior | `class Car { drive(){} }`                       |
-| Constructor              | Initializes object           | `constructor(public name:string){}`             |
-| Access Modifiers         | Encapsulation                | `private`, `protected`, `public`                |
-| Readonly                 | Immutable after init         | `readonly id:number`                            |
-| Inheritance              | `extends` base class         | `class Dog extends Animal {}`                   |
-| `super()`                | Call parent constructor      | `super(name)`                                   |
-| Abstract                 | Must be implemented in child | `abstract class Shape { abstract draw():void }` |
-| Interface Implementation | Contract enforcement         | `class Circle implements Shape {}`              |
-| Static                   | Shared across all instances  | `static version=1.0`                            |
-| Getters/Setters          | Controlled property access   | `get val() {}; set val(v) {};`                  |
+| Concept                  | Explanation                                     | Example                                         |
+| ------------------------ | ----------------------------------------------- | ----------------------------------------------- |
+| Class                    | Defines structure & behavior                    | `class Car { drive(){} }`                       |
+| Constructor              | Initializes object                              | `constructor(public name:string){}`             |
+| Access Modifiers         | Encapsulation                                   | `private`, `protected`, `public`                |
+| Readonly                 | Immutable after init                            | `readonly id:number`                            |
+| Inheritance              | `extends` base class                            | `class Dog extends Animal {}`                   |
+| `super()`                | Call parent constructor                         | `super(name)`                                   |
+| Abstract                 | Must be implemented in child                    | `abstract class Shape { abstract draw():void }` |
+| Interface Implementation | Contract enforcement                            | `class Circle implements Shape {}`              |
+| Static                   | Property Shared across all objects of the class | `static version=1.0`                            |
+| normal property          | New property on each object                     | `name:string`                                   |
+| Getters/Setters          | Controlled property access                      | `get val() {}; set val(v) {};`                  |
 
 ⚠️ **Gotchas:**
 
@@ -114,6 +115,8 @@
 ---
 
 ## 🚀 6. **Generics**
+
+- Used to create reusable, type-safe components that can work with any data type — without losing type information (functions, classes, interfaces).
 
 | Concept                    | Explanation                          | Example                            |
 | -------------------------- | ------------------------------------ | ---------------------------------- |

@@ -2,6 +2,528 @@
 
 ## Concepts
 
+### Strings
+
+- Immutable sequences of UTF-16 code units, used for text.
+
+#### Syntax
+
+```js
+const s1 = "hello";
+const s2 = `hi ${s1}`; // Interpolation: template literal
+const s3 = new String("boxed"); // ❌ rarely use
+// multi-line
+const s4 = `Line 1
+Line 2`;
+```
+
+#### Properties:
+
+1. **Immutable** → cannot change individual chars.
+   ```js
+   let s = "hi";
+   s[0] = "H"; // ❌ no effect
+   ```
+2. **Length** → `str.length`.
+3. Indexed access: `str[0]`.
+4. Unicode characters: `"😀".length === 2` (2 code units).
+5. Grapheme clusters: `"😀".length === 1` (1 grapheme cluster).
+6. Normalization: `"é".normalize() === "e\u0301".normalize()` (true).
+7. Iteration: `for (const ch of "hi") console.log(ch);` (h, i).
+8. Concatenation: `"hi" + "bye" === "hi bye"` (true).
+9. Boxed vs primitive
+
+   - All string methods work on primitives, but when called, JS temporarily boxes them into objects internally.
+
+   ```js
+   const x = "x"; // creates a primitive string.
+   const y = new String("x"); // creates a String object (wrapper), not a primitive.
+
+   typeof "x"; // "string"
+   typeof new String("x"); // "object"
+
+   new String("x") === "x"; // false
+   ```
+
+#### Methods
+
+1. Character Access
+
+   1. `at(index)` → `"abc".at(1); // "b"`
+      - returns the character at the given index (supports negative index).
+   2. `charAt(index)` → `"abc".charAt(1); // "b"`
+      - returns the character at the given index.
+   3. `charCodeAt(index)` → `"abc".charCodeAt(1); // 98"`
+      - returns the UTF-16 code unit of the character at the given index.
+   4. `codePointAt(index)` → `"😊".codePointAt(0); // 128522"`
+      - returns the full Unicode code point value at the given index.
+
+2. Search & Match
+
+   1. `includes(substring)` → `"abc".includes("b"); // true"`
+      - returns true if the string contains the given substring.
+   2. `startsWith(substring)` → `"abc".startsWith("a"); // true"`
+      - returns true if the string starts with the given substring.
+   3. `endsWith(substring)` → `"abc".endsWith("c"); // true"`
+      - returns true if the string ends with the given substring.
+   4. `indexOf(substring)` → `"abc".indexOf("b"); // 1"`
+      - returns the index of the first occurrence of the given substring.
+      - case-sensitive by default.
+      - returns -1 if the substring is not found.
+   5. `lastIndexOf(substring)` → `"abcb".lastIndexOf("b"); // 3"`
+      - returns the index of the last occurrence of the given substring.
+      - case-sensitive by default.
+      - returns -1 if the substring is not found.
+   6. `search(regex)` → `"abc".search(/b/); // 1"`
+      - returns the index of the first match for a regex pattern.
+   7. `match(regex)` → `"abc".match(/b/); // ["b"]"`
+      - returns an array with match info or null if not found.
+   8. `matchAll(regex)` → `Array.from("abcabc".matchAll(/b/g)); // [["b"],["b"]]`
+      - returns an iterator for all matches of a regex.
+
+3. Extract / Slice
+
+   1. `slice(start, end)` → `"abcdef".slice(1, 4); // "bcd"`
+      - returns a substring from start index to end index (supports negatives).
+   2. `substring(start, end)` → `"abcdef".substring(1, 4); // "bcd"`
+      - returns substring between start and end indexes (no negatives).
+   3. `substr(start, length)` → `"abcdef".substr(1, 3); // "bcd"`
+      - returns a substring of given length (legacy, avoid).
+
+4. Replace / Modify
+
+   1. `replace(substring, replacement)` → `"abc".replace("b", "x"); // "axc"`
+      - returns new string with first match replaced.
+   2. `replaceAll(substring, replacement)` → `"abcabc".replaceAll("b", "x"); // "axcaxc"`
+      - returns new string with all matches replaced.
+
+5. Split & Join
+
+   1. `split(separator)` → `"a,b,c".split(","); // ["a","b","c"]"`
+      - returns an array of substrings divided by separator.
+      - `split("")` breaks surrogate pairs:
+        ```js
+        "😀".split(""); // ["�","�"]
+        ```
+      - Use `x => [...str]` to split into individual characters.
+   2. `join(separator)` → `["a","b","c"].join(","); // "a,b,c"`
+      - returns a string by joining all array elements with the separator.
+      - _(Note: `join()` is from Array, not String.)_
+
+6. Case Conversion
+
+   1. `toUpperCase()` → `"abc".toUpperCase(); // "ABC"`
+      - returns string in uppercase.
+   2. `toLowerCase()` → `"ABC".toLowerCase(); // "abc"`
+      - returns string in lowercase.
+   3. `toLocaleUpperCase()` → `"abc".toLocaleUpperCase(); // "ABC"`
+      - returns string in uppercase using locale.
+   4. `toLocaleLowerCase()` → `"ABC".toLocaleLowerCase(); // "abc"`
+      - returns string in lowercase using locale.
+
+7. Trim & Pad
+
+   1. `trim()` → `"  abc  ".trim(); // "abc"`
+      - removes whitespace from both ends.
+   2. `trimStart()` → `"  abc  ".trimStart(); // "abc  "`
+      - removes leading whitespace.
+   3. `trimEnd()` → `"  abc  ".trimEnd(); // "  abc"`
+      - removes trailing whitespace.
+   4. `padStart(length, char)` → `"abc".padStart(5, "0"); // "00abc"`
+      - pads string on the left to reach desired length.
+   5. `padEnd(length, char)` → `"abc".padEnd(5, "0"); // "abc00"`
+      - pads string on the right to reach desired length.
+
+8. Repeat & Concat
+
+   1. `repeat(count)` → `"abc".repeat(2); // "abcabc"`
+      - repeats the string specified number of times.
+   2. `concat(...strings)` → `"a".concat("b","c"); // "abc"`
+      - concatenates multiple strings and returns a new string.
+      - For large builds, use arrays + `join()`.
+
+9. Locale & Comparison
+
+   1. `localeCompare(otherString)` → `"a".localeCompare("b"); // -1"`
+      - compares strings according to locale sorting rules.
+   2. `normalize(form)` → `"é".normalize("NFD"); // "e\u0301"`
+      - returns Unicode-normalized form (NFC, NFD, NFKC, NFKD).
+
+10. Unicode Safety
+
+    1. `isWellFormed()` → `"abc".isWellFormed(); // true"`
+       - checks if string is valid UTF-16 (no lone surrogates).
+    2. `toWellFormed()` → `"\uD800".toWellFormed(); // "�"`
+       - replaces invalid surrogates with replacement char.
+
+11. Conversion
+
+    1. `toString()` → `"abc".toString(); // "abc"`
+       - returns the string itself.
+    2. `valueOf()` → `"abc".valueOf(); // "abc"`
+       - returns the string itself.
+    3. `toLocaleString()` → `"abc".toLocaleString(); // "abc"`
+       - returns the string itself.
+
+12. Static String Methods
+
+    1. `String.fromCharCode(65,66,67); // "ABC"`
+       - creates string from UTF-16 codes.
+    2. `String.fromCodePoint(128512); // "😀"`
+       - creates string from Unicode code points.
+    3. `String.raw\`A\nB`; // "A\nB"`
+       - returns raw string from template literal.
+
+13. Deprecated / Legacy (avoid)
+
+    1. `substr(start, length)` → `"abcdef".substr(1, 3); // "bcd"`
+       - returns a substring of given length (legacy, avoid).
+    2. `anchor()`, `big()`, `blink()`, `bold()`, `fixed()`, `fontcolor()`, `fontsize()`, `italics()`, `link()`, `small()`, `strike()`, `sub()`, `sup()` – old HTML-formatting methods.
+
+#### Template Literals
+
+- (backticks `` ` ``) allow **embedded expressions, multi-line strings, and custom string processing**
+  - Delimited by backticks `` ` ``.
+  - Support `${expr}` for embedding values.
+  - Preserve newlines/whitespace.
+
+```js
+const name = "Kalidas"; // string
+`Hello, ${name}!`; // interpolation
+`Hello ${`Mr. ${name}`}`; // Nesting Interpolation
+`2 + 3 = ${2 + 3}`; // "2 + 3 = 5" Expression Interpolation
+
+`Line 1
+Line 2`; // Multi-line String interpolation
+
+`\``; // literal backtick -> `\`` -> escape backtick
+
+// Template literals don't automatically escape quotes.
+const val = 'val1"val2';
+`{"x": "${val}"}`; // ❌ unsafe if val contains quotes -> `{"x": "val1"val2"}`
+
+// Tagged Templates
+function customTag(strings, ...values) {
+  return strings[0] + values.map((v) => v.toUpperCase()).join(" ");
+}
+customTag`hi ${"world"} ${"kalidas"}`; // "hi WORLD KALIDAS" Tagged Templates
+
+// template literal uses toString() to convert the expression to a string.
+const obj = { toString: () => "OBJ" };
+`${obj}`; // "OBJ" -> toString() is overridden to return "OBJ"
+```
+
+#### Unicode, Graphemes & Normalization
+
+- Unicode
+  - JS strings are UTF-16 encoded.
+  - **Code unit**: 16-bit chunk (what JS indexes).
+  - **Code point**: actual Unicode scalar value, A number that identifies a character in Unicode.
+  - **Surrogate pairs**: characters outside BMP (`U+10000+`) use 2 code units.
+
+```js
+// Code Units vs Code Points
+"😀".length; // 2 (two UTF-16 code units) -> surrogate pairs
+"😀".codePointAt(0); // 128512 (true Unicode code point)
+```
+
+- Graphemes
+  - Characters (graphemes) may consist of one or more code points.
+  - Grapheme clusters ≠ JS string “character”.
+  - `"á".split("")` → `["a","́"]` (combining marks separate).
+  - Use `[...str]` or libraries like Graphemer for grapheme-safe splits.
+  - Normalization required - String visually same may compare unequal unless normalized e.g.
+  - `"é" (U+00E9) ≠ "é" (U+0065 U+0301)`
+  - `"é".normalize() === "é".normalize()` // true
+
+```js
+`🇮🇳` (India flag) // 2 code points
+`á` // `a + combining acute`
+[..."🇮🇳"].length; // 2 (not 1)
+"🇮🇳"[0]; // "\uD83C\uDDEE" (half a char) not valid as it splits the surrogate pair
+const ar = [..."🇮🇳"]; // ["🇮🇳"]
+```
+
+- Normalization
+  - Ensures visually identical characters with different Unicode representations are treated equally for comparison, sorting, and storage.
+  - Forms:
+    - **NFC** (Normalization Form C): composed, default.
+    - **NFD** (Normalization Form D): decomposed.
+    - **NFKC** (Normalization Form KC): compatibility variants.
+    - **NFKD** (Normalization Form KD): compatibility variants.
+  - `.normalize(form)` ensures canonical form (NFC by default).
+
+```js
+const s1 = "é"; // U+00E9
+const s2 = "e\u0301"; // e + combining acute
+s1 === s2; // false
+s1.normalize() === s2.normalize(); // true default form is NFC
+
+// NFC: Joins things together -> "e + ´ " becomes "é" (nice and tidy)
+const s = "e\u0301"; // "e" + accent -> "é"
+console.log(s); // "é" (looks same as "é" but different Unicode representation)
+console.log(s === "é"); // false 😕
+console.log(s.normalize("NFC") === "é"); // true ✅
+
+// NFD: Pulls things apart -> "é" becomes "e + ´" (you can see the parts).
+const s = "é";
+console.log(s.normalize("NFD")); // "e\u0301"
+
+// NFKC: Makes fancy letters or symbols normal -> "①" becomes "1" (plain version).
+const s = "①";
+console.log(s.normalize("NFKC")); // "1"
+
+// NFKD: Makes fancy letters normal and pulls them apart -> "①é" becomes "1e + ´" (simple pieces).
+const s = "①é";
+console.log(s.normalize("NFKD")); // "1e\u0301"
+
+// Iteration -> Iterates over code points, not code units -> "😀á" -> "😀", "a", "́"
+for (const ch of "😀á") console.log(ch); // "😀", "a", "́"
+```
+
+### Numbers
+
+- Numbers in JS (except `BigInt`) are **64-bit IEEE-754 floating point** → can represent integers up to **2⁵³-1 safely**.
+- **Immutable** → cannot modify numbers in place.
+  - `let x = 10; x++; // creates new value, doesn’t mutate`
+
+```js
+let n1 = 42; // integer
+let n2 = 3.14; // float
+let n3 = 1e6; // exponential
+let n4 = 0b1010; // binary (10)
+let n5 = 0o755; // octal (493)
+let n6 = 0xff; // hex (255)
+```
+
+#### Properties
+
+##### Core Properties
+
+1. Immutable → `let x = 10; x++;`
+   - Numbers are primitive values; they cannot be changed in place.
+2. `Number.prototype` → `Object.getOwnPropertyNames(Number.prototype);`
+   - Base prototype for all number methods like `toFixed`, `toString`, etc.
+3. `Number.length` → `1`
+   - Indicates the Number constructor takes one argument.
+4. `Number.name` → `"Number"`
+   - Returns the constructor name.
+5. `Number.constructor` → `Function`
+   - References the built-in Function constructor.
+6. `Number.prototype.constructor` → `Number`
+   - Points back to the Number constructor function.
+
+##### Static Constants
+
+7. `Number.MAX_VALUE` → `1.7976931348623157e+308`
+   - The largest finite representable number.
+8. `Number.MIN_VALUE` → `5e-324`
+   - The smallest positive number greater than zero.
+9. `Number.MAX_SAFE_INTEGER` → `9007199254740991`
+   - Largest integer that can be represented safely (2⁵³ − 1).
+10. `Number.MIN_SAFE_INTEGER` → `-9007199254740991`
+    - Smallest safe integer representable.
+11. `Number.POSITIVE_INFINITY` → `Infinity`
+    - Represents positive infinity.
+12. `Number.NEGATIVE_INFINITY` → `-Infinity`
+    - Represents negative infinity.
+13. `Number.NaN` → `NaN`
+    - Represents “Not-a-Number”.
+14. `Number.EPSILON` → `2.220446049250313e-16`
+    - The smallest difference between 1 and the next representable number.
+
+##### BigInt Safe Range
+
+15. Safe Integer Range → `Number.isSafeInteger(9007199254740992); // false`
+    - Integers beyond ±(2⁵³ − 1) lose precision; use BigInt instead.
+
+##### Instance & Type Behavior
+
+16. Primitive Type → `typeof 42; // "number"`
+    - Numbers are primitives.
+17. Boxed Object → `typeof new Number(42); // "object"`
+    - `new Number()` creates a Number object wrapper (avoid in practice).
+18. Auto-Boxing → `(42).toFixed(2); // "42.00"`
+    - JS auto-boxes primitives to use methods.
+19. Immutable Behavior → `let n = 5; n + 1; n; // 5`
+    - Operations return new values, don’t mutate.
+
+##### Special Values
+
+20. `Infinity` → `1 / 0;`
+    - Represents overflow beyond numeric limit.
+21. `-Infinity` → `-1 / 0;`
+    - Represents underflow beyond negative limit.
+22. `NaN` → `parseInt("abc");`
+    - Returned for invalid numeric operations.
+23. `-0` → `Object.is(+0, -0); // false`
+    - `-0` is distinct from `+0`, though they behave similarly in math.
+
+##### ES6+ Type Checking & Parsing
+
+24. `Number.isFinite(x)` → `Number.isFinite(10 / 2);`
+    - Checks if value is finite (no coercion).
+25. `Number.isInteger(x)` → `Number.isInteger(10.5);`
+    - Checks if value is an integer (no coercion).
+26. `Number.isNaN(x)` → `Number.isNaN(NaN);`
+    - Checks for NaN without coercion (unlike global `isNaN`).
+27. `Number.isSafeInteger(x)` → `Number.isSafeInteger(9007199254740992);`
+    - Checks if integer is within the safe range.
+28. `Number.parseFloat(str)` → `Number.parseFloat("3.14abc"); // 3.14`
+    - Parses string to float (same as global `parseFloat`).
+29. `Number.parseInt(str)` → `Number.parseInt("42px");`
+    - Parses string to integer (same as global `parseInt`).
+
+| Category  | Examples                                 | Description                        |
+| --------- | ---------------------------------------- | ---------------------------------- |
+| Limits    | `MAX_VALUE`, `MIN_VALUE`                 | Range boundaries                   |
+| Precision | `EPSILON`, `MAX_SAFE_INTEGER`            | Floating-point & integer precision |
+| Infinity  | `POSITIVE_INFINITY`, `NEGATIVE_INFINITY` | Overflow markers                   |
+| Invalid   | `NaN`, `isNaN()`                         | Non-numeric indicators             |
+| Checking  | `isFinite()`, `isInteger()`              | Type-safe validators               |
+| Type      | `typeof`, `instanceof`                   | Identify primitives vs objects     |
+
+#### Methods
+
+##### Number Prototype Methods
+
+1. `toFixed(digits)` → `(3.14159).toFixed(2); // "3.14"`
+   - Formats number using fixed decimal places (string output).
+2. `toPrecision(precision)` → `(3.14159).toPrecision(3); // "3.14"`
+   - Formats number to a specified total number of digits (scientific or fixed).
+3. `toExponential(digits)` → `(123456).toExponential(2); // "1.23e+5"`
+   - Returns string in exponential (scientific) notation with defined decimals.
+4. `toString(radix)` → `(255).toString(16); // "ff"`
+   - Converts number to a string in the given base (2–36).
+5. `valueOf()` → `(42).valueOf(); // 42`
+   - Returns the primitive numeric value of a Number object.
+6. `toLocaleString(locale, options)` → `(1234567.89).toLocaleString("en-IN"); // "12,34,567.89"`
+   - Formats number according to locale and formatting options (useful for currency, thousands separators).
+7. `toLocaleString(locale, options)` → `(1234.56).toLocaleString("en-US", { style: "currency", currency: "USD" }); // "$1,234.56"`
+   - Returns localized string representation with currency, percent, or unit formats.
+8. `toLocaleString(locale, options)` → `(1234567).toLocaleString("en-IN"); // "12,34,567"`
+   - Locale-specific grouping for Indian numbering system.
+9. `toString()` (without radix) → `(42).toString(); // "42"`
+   - Default base-10 string representation.
+10. `toExponential()` (default) → `(77).toExponential(); // "7.7e+1"`
+    - Converts number to exponential notation (default precision auto-calculated).
+11. `toPrecision()` (without argument) → `(77.1234).toPrecision(); // "77.1234"`
+    - Returns number as is, without formatting.
+12. `toFixed()` (default) → `(77.1234).toFixed(); // "77"`
+    - Rounds to nearest integer and returns string.
+13. `Precision Loss` → `(0.1 + 0.2).toFixed(2); // "0.30"` (rounded, not exact `0.30000000000000004`).
+    - Always returns **string**, not number — convert back with `parseFloat()` if needed.
+14. `Chaining Example` → `(123.456).toFixed(1).toString(); // "123.5"`
+    - Methods can be chained for formatting pipelines.
+15. `Auto-Boxing` → `(42).toFixed(2)` works even on primitives — JS internally boxes the number into a temporary `Number` object.
+16. `Default Conversion Order` → When coerced to string, JS calls `toString()` → `valueOf()` as fallback.
+17. `Locale Formatting Performance` → `toLocaleString()` is **heavier** than `toFixed()` due to ICU library calls — avoid inside loops.
+
+##### Math API
+
+```js
+Math.round(4.6); // 5
+Math.floor(4.9); // 4
+Math.ceil(4.1); // 5
+Math.trunc(4.9); // 4
+Math.random(); // [0,1)
+Math.max(1, 2, 3); // 3
+Math.pow(2, 3); // 8
+2 ** 3; // 8 (exponentiation operator)
+```
+
+#### Gotchas ⚠️ (Exhaustive)
+
+1. **Floating-point precision**
+   - `0.1 + 0.2 !== 0.3` → `0.30000000000000004`
+   - Use `Number.EPSILON` for tolerance:
+     ```js
+     Math.abs(a - b) < Number.EPSILON;
+     ```
+2. **Safe integer limits**
+   - Beyond ±(2⁵³-1) → precision errors.
+   - `Number.isSafeInteger(2**53); // false`
+   - Use `BigInt` for huge integers.
+3. **NaN quirks**
+   - `NaN === NaN` → false.
+   - Only reliable via `Number.isNaN()` or `Object.is()`.
+4. **Infinity**
+   - Dividing by 0 → `Infinity`.
+   - Arithmetic with `Infinity` may produce `NaN`.
+5. **parseInt pitfalls**
+   - `parseInt("08")` → `8` (not octal in ES5+).
+   - Always pass radix: `parseInt("08", 10)`.
+6. **Loose equality coercion**
+   - `"42" == 42` → true.
+   - `"42px"` == 42 → false, but `parseInt("42px")` → 42.
+7. **Bitwise ops**
+   - Convert numbers to **32-bit signed ints**.
+   - Large numbers overflow: `1<<31` → -2147483648.
+8. **JSON quirks**
+   - JSON.stringify drops `Infinity`/`NaN` → `null`.
+9. **-0**
+   - `-0` exists (distinct from `0` in `Object.is`).
+   - Breaks some logic (e.g., dividing).
+10. **Math.random**
+    - Returns pseudo-random; not cryptographically secure.
+    - Use `crypto.getRandomValues` for secure random.
+11. **Number wrappers**
+    - `new Number(5)` creates object, not primitive. Avoid.
+12. **Trailing decimals**
+    - `42.` is valid JS (same as `42.0`).
+13. **Octal literals**
+    - Legacy `012` is disallowed in strict mode.
+
+### Floating-Point Precision
+
+- All JS numbers use **IEEE-754 double-precision floating point (64-bit)**.
+  - 53 bits of precision → ~15–17 decimal digits.
+  - Some decimal fractions **cannot be represented exactly**.
+
+```js
+0.1 + 0.2; // 0.30000000000000004
+0.3 - 0.2; // 0.09999999999999998
+
+// fix
+//Tolerant Comparison
+function nearlyEqual(a, b, eps = Number.EPSILON) {
+  return Math.abs(a - b) < eps;
+}
+nearlyEqual(0.1 + 0.2, 0.3); // true
+Number.EPSILON ≈ 2.22e-16 // smallest difference detectable.
+
+//Rounding
+Number((0.1 + 0.2).toFixed(2)); // 0.3
+
+//Integer Math (Scaling)
+(0.1 * 10 + 0.2 * 10) / 10; // 0.3
+
+// Use libraries like big.js, decimal.js, bignumber.js for financial/math-critical apps.
+```
+
+#### Gotchas ⚠️ (Exhaustive)
+
+1. **Equality fails**
+   - Direct comparison unreliable: `(0.1+0.2)===0.3` → false.
+2. **Large vs small numbers**
+   - Precision shrinks as numbers grow.
+   - `9007199254740993 === 9007199254740992` → true (past safe int).
+3. **Division quirks**
+   - `1/49*49` ≠ `1`.
+4. **Associativity issues**
+   - `(a+b)+c !== a+(b+c)` with floats.
+5. **JSON.stringify**
+   - Converts numbers to shortest decimal that round-trips, may look odd.
+6. **toFixed rounding**
+   - `1.005.toFixed(2)` → "1.00" (binary fraction issue).
+7. **Math.max precision**
+   - Very large values may overflow to Infinity.
+8. **-0 quirks**
+   - `1/-Infinity` → -0.
+   - `-0===0` → true, but `Object.is(-0,0)` → false.
+9. **Bitwise ops**
+   - Coerce floats to 32-bit signed ints → precision loss.
+
 ### Arrays
 
 - Ordered, zero-indexed collections of values. Special type of object with powerful built-in methods.
@@ -37,7 +559,7 @@ fill(0), copyWithin();
 concat(), slice(), join(), includes(), indexOf(), lastIndexOf(),toReversed(), toSorted(), toSpliced(), with();
 ```
 
-### Iteration / Functional Methods
+#### Iteration / Functional Methods
 
 ```js
 // Executes callback for each element (no return)
@@ -84,6 +606,92 @@ concat(), slice(), join(), includes(), indexOf(), lastIndexOf(),toReversed(), to
 at(-1) → last element.
 ```
 
+#### Caveats
+
+##### Sparse Arrays
+
+- Sparse Arrays: Arrays with “holes” → indices exist in `length` count but have **no values** stored.
+- Sparse arrays are slower (not optimized like dense arrays)
+  - Parser doesn’t check holes.
+  - Runtime marks array as holey when a missing element appears.
+  - Sparse arrays are slower due to extra hole checks.
+  - Dense arrays use optimized packed storage.
+  - Tip: Avoid holes → use `undefined` explicitly if needed.
+
+```js
+const a = new Array(3); // [ <3 empty items> ]
+const b = [1, , 3]; // [1, <empty>, 3]
+b.length; // 3
+b[1] = returns undefined; // [1, undefined, 3]
+
+// Preserves hole
+arr.join("-"); // "1--3"
+arr.toString(); // "1,,3"
+
+// Skips hole (forEach, map, filter, some, every, reduce)
+arr.forEach((x) => console.log(x)); // 1, 3
+arr.map((x) => x || 0); // [1, <empty>, 3]
+
+// include existing indices only (`for...in`, `for...of`, `Object.keys`)
+for (const index in arr) {
+  console.log(index); // 0, 2
+}
+
+// turn holes into `undefined` (`Array.from`, spread)
+Array.from(arr); // [1, undefined, 3]
+[...arr]; // [1, undefined, 3]
+
+// JSON.stringify converts holes to `null`
+JSON.stringify([, 1, 2]); // "[null,1,2]"
+
+// Fills holes
+arr[1] = 2; // now [1,2,3]
+// fill holes with a value
+new Array(3).fill(0); // [0,0,0]
+
+// delete creates a hole
+delete arr[1]; // now [1,,3]
+// splice removes elements and shifts indices
+arr.splice(1, 1); // now [1,3]
+
+// use `Array.fill` to initialize
+new Array(3).fill(0); // [0,0,0]
+
+// use `Array.from` to convert to array
+Array.from([1,,3]); // [1,undefined,3]
+
+
+//Undefined ≠ empty slot
+[undefined].length; // 1
+[,].length; // 1 (but hole, not undefined)
+```
+
+##### Array-like Objects
+
+- Objects that look like arrays (indexed keys + `length`) but lack array methods.
+- Examples:
+  - `arguments`
+  - DOM collections (`NodeList`, `HTMLCollection`)
+  - Typed arrays (`Uint8Array`, etc.)
+  - Custom objects `{0:"a",1:"b",length:2}`
+- Properties
+  - Indexed elements → numeric keys `"0"`, `"1"`, …
+  - `.length` property.
+  - No `map`, `filter`, `reduce`, etc.
+- Copy traps
+  - Spreading `[...obj]` only works if iterable. Non-iterable array-like → `TypeError`.
+- Always check `Array.isArray()` when expecting real arrays.
+
+Converting to Real Array with `Array.from` or spread
+
+```js
+const obj = { 0: "a", 1: "b", length: 2 };
+Array.from(obj); // ["a","b"]
+[...obj]; // ["a","b"]
+Array.from(arguments);
+[...arguments];
+```
+
 #### alert⚠️
 
 - Length:
@@ -116,6 +724,7 @@ at(-1) → last element.
 - Convert array-likes with `Array.from()`.
 
 - Iteration
+
   - Use `map` for transformation, `filter` for selection.
   - Always provide `initialValue` in `reduce`.
   - Use `find` for first match, `filter` for multiple.
@@ -123,9 +732,18 @@ at(-1) → last element.
   - Use `some`/`every` for readability over manual loops.
   - Be cautious with sparse arrays [ , , ]; prefer initializing fully.
 
+- Avoid creating sparse arrays intentionally.
+- **“Array-like = Looks like array, but walks like object.”**
+
 ---
 
 ## Mnemonic
+
+- **“Strings = Immutable text, UTF-16 quirks, handle with care.”**
+- **“Template Literals = Backticks + ${Expressions} + Multiline + Tags.”**
+- **“Code units ≠ Code points ≠ Graphemes. Normalize for equality.”**
+
+- **“Floats Lie — Compare with EPSILON, Scale to Integers, or Use Big Decimal.”**
 
 - “Array = Ordered list, mind the holes, always copy carefully.”
 - **map = transform**
@@ -135,7 +753,7 @@ at(-1) → last element.
 - **some = at least one**
 - **every = all pass**
 
----
+- **“Holes ≠ Undefined. Holes = skipped, undefined = value.”**
 
 ---
 
@@ -149,764 +767,7 @@ at(-1) → last element.
 
 ---
 
-# 🕳️ JavaScript Sparse Arrays — Cheat Card
-
-**Concept:**
-Arrays with “holes” → indices exist in `length` count but have **no values** stored.
-
 ---
-
-### Creation
-
-```js
-const a = new Array(3); // [ <3 empty items> ]
-const b = [1, , 3]; // [1, <empty>, 3]
-```
-
----
-
-### Behavior
-
-- **Length counts holes**
-  ```js
-  [, ,].length; // 2
-  ```
-- **Accessing a hole** → `undefined`.
-- **Iteration** varies: some methods skip holes.
-
----
-
-### Methods & Iteration
-
-```js
-const arr = [1, , 3];
-// Skips hole
-arr.forEach((x) => console.log(x)); // 1, 3
-arr.map((x) => x || 0); // [1, <empty>, 3]
-// Preserves hole
-arr.join("-"); // "1--3"
-arr.toString(); // "1,,3"
-// Fills holes
-arr[1] = 2; // now [1,2,3]
-```
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Undefined ≠ empty slot**
-   ```js
-   [undefined].length; // 1
-   [,].length; // 1 (but hole, not undefined)
-   ```
-2. **Skipped in iteration**
-   - `forEach`, `map`, `filter`, `some`, `every` → **skip holes**.
-   - `for...in`, `for...of`, `Object.keys` → include existing indices only.
-   - `Array.from` / spread (`[...arr]`) → turn holes into `undefined`.
-3. **reduce() quirks**
-   - Skips holes, but respects length.
-   ```js
-   [, 1].reduce((a, b) => a + b); // 1 (skips hole)
-   ```
-4. **Performance**
-   - Sparse arrays are slower (not optimized like dense arrays).
-5. **JSON.stringify**
-   - Converts holes to `null`.
-   ```js
-   JSON.stringify([, 1, 2]); // "[null,1,2]"
-   ```
-6. **Inconsistent debugging**
-   - DevTools show `<empty>` vs `undefined`. Don’t confuse.
-7. **Array methods**
-   - `delete arr[1]` creates a hole, doesn’t shrink array.
-   - Use `splice()` to actually remove.
-8. **Array holes in ES2023 methods**
-   - New immutable methods (`toSpliced`, `toSorted`, `with`) still handle holes consistently → holes preserved unless explicitly filled.
-
----
-
-### Best Practices
-
-- ✅ Avoid creating sparse arrays intentionally.
-- ✅ Use `Array.fill` to initialize:
-  ```js
-  new Array(3).fill(0); // [0,0,0]
-  ```
-- ✅ Use `Array.from({length:n}, (_,i)=>i)` for dense ranges.
-- ❌ Don’t use `delete arr[i]`; use `splice()`.
-- ✅ Treat `undefined` explicitly instead of holes.
-
----
-
-## 👉 Mnemonic: **“Holes ≠ Undefined. Holes = skipped, undefined = value.”**
-
-## Would you like me to now prepare a **cheat card on Array Copying & Cloning** (spread, slice, Array.from, structuredClone), since sparse arrays behave differently across these?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **Array-like Objects** in JavaScript — compact, practical, and with **all gotchas grouped together**.
-
-# 📑 JavaScript Array-like Objects — Cheat Card
-
-**Concept:**
-Objects that look like arrays (indexed keys + `length`) but lack array methods.
-
----
-
-### Examples
-
-```js
-// arguments object
-function demo(a, b) {
-  console.log(arguments[0]); // a
-  console.log(arguments.length); // count
-}
-// DOM collections
-const divs = document.querySelectorAll("div"); // NodeList
-```
-
-- `arguments`
-- DOM collections (`NodeList`, `HTMLCollection`)
-- Typed arrays (`Uint8Array`, etc.)
-- Custom objects `{0:"a",1:"b",length:2}`
-
----
-
-### Converting to Real Array
-
-```js
-Array.from(arguments);
-[...divs];
-Array.prototype.slice.call(arguments);
-```
-
----
-
-### Properties
-
-- Indexed elements → numeric keys `"0"`, `"1"`, …
-- `.length` property.
-- No `map`, `filter`, `reduce`, etc.
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Not true arrays**
-   - Fail `Array.isArray()`.
-   - Still typeof `"object"`.
-2. **Missing methods**
-   - No `push`, `pop`, `map`, etc.
-   - Must borrow via `Array.prototype.method.call(obj, ...)`.
-3. **Live collections**
-   - `HTMLCollection` updates automatically if DOM changes.
-   - `NodeList` may be live or static (depends on API).
-4. **Iteration quirks**
-   - Some iterable (NodeList with `for...of`), some not (`arguments` pre-ES6).
-5. **Length mismatch**
-   - `length` may not reflect true count (custom array-likes).
-6. **Sparse-like behavior**
-   - Holes behave inconsistently. `Array.from({length:3})` → `[undefined, undefined, undefined]`.
-7. **Performance**
-   - Converting very large DOM collections repeatedly is costly.
-8. **arguments vs rest params**
-   - `arguments` is array-like, rest params give true arrays.
-   ```js
-   function f(...args) {
-     console.log(Array.isArray(args));
-   } // true
-   ```
-9. **Copy traps**
-   - Spreading `[...obj]` only works if iterable. Non-iterable array-like → ❌.
-
----
-
-### Best Practices
-
-- ✅ Convert array-likes to arrays with `Array.from` or spread.
-- ✅ Use rest params (`...args`) instead of `arguments`.
-- ✅ Don’t rely on live collections; convert to static arrays before iteration.
-- ✅ Always check `Array.isArray()` when expecting real arrays.
-
----
-
-## 👉 Mnemonic: **“Array-like = Looks like array, but walks like object.”**
-
-## Would you like me to next prepare a **cheat card comparing Array-like vs Iterable vs Real Array** (since interviews often test the difference between these three)?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **Strings** in JavaScript — complete, concise, and with **all gotchas grouped together**.
-
-# 🔤 JavaScript Strings — Cheat Card
-
-**Concept:**
-Immutable sequences of UTF-16 code units, used for text.
-
----
-
-### Creation
-
-```js
-const s1 = "hello";
-const s2 = "world";
-const s3 = `hi ${s1}`; // template literal
-const s4 = new String("boxed"); // ❌ rarely use
-```
-
----
-
-### Properties
-
-- **Immutable** → cannot change individual chars.
-- **Length** → `str.length`.
-- Indexed access: `str[0]`.
-
----
-
-### Common Methods
-
-```js
-"abc".charAt(1); // "b"
-"abc".charCodeAt(1); // 98
-"abc".at(-1); // "c" (ES2022)
-"hello".toUpperCase(); // "HELLO"
-"HELLO".toLowerCase(); // "hello"
-"hello world".includes("lo"); // true
-"hello".startsWith("he"); // true
-"hello".endsWith("lo"); // true
-"repeat ".repeat(3); // "repeat repeat repeat "
-"   hi   ".trim(); // "hi"
-"   hi   ".trimStart(); // "hi   "
-"   hi   ".trimEnd(); // "   hi"
-"abc".padStart(5, "-"); // "--abc"
-"abc".padEnd(5, "-"); // "abc--"
-"hi,bye".split(","); // ["hi","bye"]
-["a", "b"].join("-"); // "a-b"
-```
-
----
-
-### Template Literals
-
-```js
-const name = "Kalidas";
-`Hello, ${name}!`; // interpolation
-`line1
-line2`; // multi-line
-```
-
----
-
-### Iteration
-
-```js
-for (const ch of "hi") console.log(ch);
-// "h", "i"
-```
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Immutability**
-   ```js
-   let s = "hi";
-   s[0] = "H"; // ❌ no effect
-   ```
-   Must create new strings.
-2. **UTF-16 quirks**
-   - Some Unicode chars (emoji, astral symbols) use 2 code units.
-   - `"😀".length === 2`, not 1.
-   - Use ES6 `for...of` or `.codePointAt()` for proper handling.
-3. **Boxed vs primitive**
-   - `new String("x")` creates object wrapper, not primitive.
-   - Comparisons differ:
-     ```js
-     new String("x") === "x"; // false
-     ```
-4. **Index access**
-   - Read-only.
-   - `str[0]` works, but cannot assign.
-5. **`split("")` & Unicode**
-   - Breaks surrogate pairs:
-     ```js
-     "😀".split(""); // ["�","�"]
-     ```
-   - Use `[...str]`.
-6. **Locale-sensitive methods**
-   - `toLocaleUpperCase`, `toLocaleLowerCase` differ by locale.
-7. **Search methods quirks**
-   - `indexOf` returns `-1` if not found.
-   - Case-sensitive by default.
-8. **Performance**
-   - Strings are immutable → concatenation creates new string each time.
-   - For large builds, use arrays + `join()`.
-9. **Template literal traps**
-   - Expressions inside `${}` coerced to string unless object has `.toString()`.
-10. **Trim & pad support**
-    - Older environments may not support `.trimStart`, `.trimEnd`, `.padStart`, `.padEnd`.
-
----
-
-### Best Practices
-
-- ✅ Prefer string literals over `new String()`.
-- ✅ Use template literals for dynamic strings.
-- ✅ Use `for...of` or spread for Unicode-safe iteration.
-- ✅ Use `Array.join` for efficient large concatenations.
-- ✅ Always consider Unicode edge cases if working with emojis/intl.
-
----
-
-## 👉 Mnemonic: **“Strings = Immutable text, UTF-16 quirks, handle with care.”**
-
-## Would you like me to also prepare a **cheat card on Template Literals & Tagged Templates** (since they’re powerful string features often missed in interviews)?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **Template Literals** in JavaScript — sharp, practical, and with **all gotchas grouped together**.
-
-# 📜 JavaScript Template Literals — Cheat Card
-
-**Concept:**
-Introduced in ES6, template literals (backticks `` ` ``) allow **embedded expressions, multi-line strings, and custom string processing**.
-
----
-
-### Syntax
-
-```js
-const name = "Kalidas";
-const msg = `Hello, ${name}!`; // interpolation
-```
-
-- Delimited by backticks `` ` ``.
-- Support `${expr}` for embedding values.
-- Preserve newlines/whitespace.
-
----
-
-### Features
-
-1. **Expression Interpolation**
-
-```js
-`2 + 3 = ${2 + 3}`; // "2 + 3 = 5"
-```
-
-2. **Multi-line Strings**
-
-```js
-`Line 1
-Line 2`;
-```
-
-3. **Nesting**
-
-```js
-`Hello ${`Mr. ${name}`}`;
-```
-
-4. **Tagged Templates**
-
-```js
-function tag(strings, ...values) {
-  return strings[0] + values.map((v) => v.toUpperCase()).join(" ");
-}
-tag`hi ${"world"} ${"kalidas"}`; // "hi WORLD KALIDAS"
-```
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Automatic toString coercion**
-   - Objects interpolated via `.toString()`.
-   ```js
-   const obj = { toString: () => "OBJ" };
-   `${obj}`; // "OBJ"
-   ```
-2. **Expression execution**
-   - Expressions are evaluated immediately (not lazy).
-3. **Injection risks**
-   - Embedding raw user input can cause XSS in HTML strings.
-   - Use proper escaping/sanitization.
-4. **Performance**
-   - Heavy use in hot loops may create many short-lived strings.
-5. **Tagged templates quirks**
-   - `strings` array elements are **frozen** (`Object.freeze`).
-   - Raw string form accessible via `String.raw`.
-6. **Escaping backticks**
-   ```js
-   `\``; // literal backtick
-   ```
-7. **JSON pitfalls**
-   - Template literals don’t automatically escape quotes.
-   ```js
-   const json = `{"x": "${val}"}`; // ❌ unsafe if val contains quotes
-   ```
-8. **Line endings**
-   - Newlines preserved literally (not `\n` by default).
-9. **Tagged templates + security**
-   - Safe for DSLs (e.g., GraphQL, SQL), but misuse can leak injection bugs.
-
----
-
-### Best Practices
-
-- ✅ Prefer template literals for readability over string concatenation.
-- ✅ Use them for multi-line strings, dynamic values.
-- ✅ For user input in HTML, sanitize before interpolation.
-- ✅ Use tagged templates (`String.raw`, custom tags) for special formatting.
-- ✅ Escape backticks if needed.
-- ❌ Don’t overuse for static strings.
-
----
-
-## 👉 Mnemonic: **“Template Literals = Backticks + ${Expressions} + Multiline + Tags.”**
-
-## Would you like me to also prepare a **dedicated cheat card on Tagged Templates & String.raw** (since those are the advanced parts interviewers like to test)?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **Unicode, Graphemes & Normalization** in JavaScript — deep but concise, with **all gotchas grouped together**.
-
-# 🌍 JavaScript Unicode, Graphemes & Normalization — Cheat Card
-
-**Concept:**
-JS strings are UTF-16 encoded. Characters (graphemes) may consist of one or more code units. Normalization ensures different Unicode forms compare equally.
-
----
-
-### Code Units vs Code Points
-
-```js
-"😀".length; // 2 (two UTF-16 code units)
-"😀".codePointAt(0); // 128512 (true Unicode code point)
-```
-
-- **Code unit**: 16-bit chunk (what JS indexes).
-- **Code point**: actual Unicode scalar value.
-- **Surrogate pairs**: characters outside BMP (`U+10000+`) use 2 code units.
-
----
-
-### Graphemes
-
-- Visible character may be multiple code points:
-  - `🇮🇳` (India flag) = 2 code points.
-  - `á` = `a + combining acute`.
-
-```js
-[..."🇮🇳"].length; // 2 (not 1)
-```
-
-- Grapheme clusters ≠ JS string “character”.
-
----
-
-### Normalization
-
-```js
-const s1 = "é"; // U+00E9
-const s2 = "e\u0301"; // e + combining acute
-s1 === s2; // false
-s1.normalize() === s2.normalize(); // true
-```
-
-- Unicode allows multiple representations.
-- `.normalize(form)` ensures canonical form.
-- Forms:
-  - **NFC** (composed, default)
-  - **NFD** (decomposed)
-  - **NFKC**, **NFKD** (compatibility variants).
-
----
-
-### Iteration
-
-```js
-for (const ch of "😀á") console.log(ch);
-// "😀", "a", "́"
-```
-
-- `for...of` iterates **code points**, not code units.
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **`.length` misleading**
-   - Counts UTF-16 units, not graphemes.
-   - `"😀".length === 2`.
-2. **Index access broken for surrogate pairs**
-   ```js
-   "😀"[0]; // "\uD83D" (half a char)
-   ```
-3. **Split issues**
-   - `"á".split("")` → `["a","́"]` (combining marks separate).
-   - Use `[...str]` or libraries like Graphemer for grapheme-safe splits.
-4. **Regex pitfalls**
-   - `.` in regex matches code units, not graphemes.
-   - ES2015+ `u` flag improves (but still not grapheme-aware).
-   ```js
-   "😀".match(/./u); // ["😀"]
-   ```
-5. **Upper/lowercase quirks**
-   - Case mapping depends on locale. `"i".toUpperCase()` vs Turkish `İ`.
-6. **Normalization required**
-   - String visually same may compare unequal unless normalized.
-7. **Sorting**
-   - Lexical ordering ≠ human ordering. Use `localeCompare()`.
-8. **Performance**
-   - `.normalize()` and grapheme-safe operations slower on huge texts.
-9. **JSON/stringify**
-   - Keeps code points but doesn’t normalize.
-10. **Emoji sequences**
-
-- Complex emoji (family 👨‍👩‍👧‍👦) = multiple code points joined by zero-width joiners. Length/iteration behave unexpectedly.
-
----
-
-### Best Practices
-
-- ✅ Use `for...of` or spread `[...str]` for code point iteration.
-- ✅ Use `.normalize()` before comparisons.
-- ✅ Use `localeCompare()` for sorting.
-- ✅ Avoid direct indexing when dealing with Unicode text.
-- ✅ Use libraries (`graphemer`, `Intl.Segmenter`) for grapheme awareness.
-- ❌ Don’t trust `.length` as character count.
-
----
-
-## 👉 Mnemonic: **“Code units ≠ Code points ≠ Graphemes. Normalize for equality.”**
-
-Would you like me to make a **dedicated cheat card on `Intl` APIs (Intl.Collator, Intl.Segmenter, Intl.NumberFormat, etc.)**, since they’re crucial for real-world Unicode handling in JS?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **Numbers** in JavaScript — everything from basics to quirks, with **all gotchas grouped together**.
-
-# 🔢 JavaScript Numbers — Cheat Card
-
-**Concept:**
-All numbers in JS (except `BigInt`) are **64-bit IEEE-754 floating point** → can represent integers up to **2⁵³-1 safely**.
-
----
-
-### Creation
-
-```js
-let n1 = 42; // integer
-let n2 = 3.14; // float
-let n3 = 1e6; // exponential
-let n4 = 0b1010; // binary (10)
-let n5 = 0o755; // octal (493)
-let n6 = 0xff; // hex (255)
-```
-
----
-
-### Properties
-
-- `Number.MAX_SAFE_INTEGER` → 2⁵³-1
-- `Number.MIN_SAFE_INTEGER` → -(2⁵³-1)
-- `Number.MAX_VALUE` → ~1.79e308
-- `Number.MIN_VALUE` → ~5e-324
-- `Number.POSITIVE_INFINITY`, `Number.NEGATIVE_INFINITY`
-- `Number.NaN` (Not a Number)
-
----
-
-### Methods
-
-```js
-Number.isNaN(NaN); // true
-Number.isFinite(123); // true
-Number.isInteger(10.0); // true
-Number.parseInt("42px"); // 42
-Number.parseFloat("3.14"); // 3.14
-```
-
----
-
-### Math API
-
-```js
-Math.round(4.6); // 5
-Math.floor(4.9); // 4
-Math.ceil(4.1); // 5
-Math.trunc(4.9); // 4
-Math.random(); // [0,1)
-Math.max(1, 2, 3); // 3
-Math.pow(2, 3); // 8
-2 ** 3; // 8 (exponentiation operator)
-```
-
----
-
-### Special Values
-
-```js
-NaN !== NaN; // true
-Object.is(NaN, NaN); // true
-0 === -0; // true
-Object.is(0, -0); // false
-```
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Floating-point precision**
-   - `0.1 + 0.2 !== 0.3` → `0.30000000000000004`
-   - Use `Number.EPSILON` for tolerance:
-     ```js
-     Math.abs(a - b) < Number.EPSILON;
-     ```
-2. **Safe integer limits**
-   - Beyond ±(2⁵³-1) → precision errors.
-   - `Number.isSafeInteger(2**53); // false`
-   - Use `BigInt` for huge integers.
-3. **NaN quirks**
-   - `NaN === NaN` → false.
-   - Only reliable via `Number.isNaN()` or `Object.is()`.
-4. **Infinity**
-   - Dividing by 0 → `Infinity`.
-   - Arithmetic with `Infinity` may produce `NaN`.
-5. **parseInt pitfalls**
-   - `parseInt("08")` → `8` (not octal in ES5+).
-   - Always pass radix: `parseInt("08", 10)`.
-6. **Loose equality coercion**
-   - `"42" == 42` → true.
-   - `"42px"` == 42 → false, but `parseInt("42px")` → 42.
-7. **Bitwise ops**
-   - Convert numbers to **32-bit signed ints**.
-   - Large numbers overflow: `1<<31` → -2147483648.
-8. **JSON quirks**
-   - JSON.stringify drops `Infinity`/`NaN` → `null`.
-9. **-0**
-   - `-0` exists (distinct from `0` in `Object.is`).
-   - Breaks some logic (e.g., dividing).
-10. **Math.random**
-    - Returns pseudo-random; not cryptographically secure.
-    - Use `crypto.getRandomValues` for secure random.
-11. **Number wrappers**
-    - `new Number(5)` creates object, not primitive. Avoid.
-12. **Trailing decimals**
-    - `42.` is valid JS (same as `42.0`).
-13. **Octal literals**
-    - Legacy `012` is disallowed in strict mode.
-
----
-
-### Best Practices
-
-- ✅ Use `Number.isNaN` / `Number.isFinite`.
-- ✅ Use `Number.EPSILON` for float comparison.
-- ✅ Use `BigInt` for integers > 2⁵³-1.
-- ✅ Always pass radix to `parseInt`.
-- ✅ Prefer literals (`42`) over `new Number()`.
-- ✅ Use `Math.trunc` instead of bitwise hacks (`x|0`).
-
----
-
-## 👉 Mnemonic: **“JS Numbers = Double (64-bit float), Mind Precision & Limits.”**
-
-Would you like me to now prepare a **cheat card on `BigInt`** (since it complements Numbers for safe large integer handling)?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **Floating-Point Precision** in JavaScript — compact, complete, and with **all gotchas grouped together**.
-
-# 🔬 JavaScript Floating-Point Precision — Cheat Card
-
-**Concept:**
-All JS numbers use **IEEE-754 double-precision floating point (64-bit)**.
-
-- 53 bits of precision → ~15–17 decimal digits.
-- Some decimal fractions **cannot be represented exactly**.
-
----
-
-### Classic Issue
-
-```js
-0.1 + 0.2; // 0.30000000000000004
-0.3 - 0.2; // 0.09999999999999998
-```
-
----
-
-### Why?
-
-- Binary floating point can’t exactly store decimals like 0.1 or 0.2.
-- Stored as closest binary fraction → rounding errors.
-
----
-
-### Tolerant Comparison
-
-```js
-function nearlyEqual(a, b, eps = Number.EPSILON) {
-  return Math.abs(a - b) < eps;
-}
-nearlyEqual(0.1 + 0.2, 0.3); // true
-```
-
-- `Number.EPSILON ≈ 2.22e-16` → smallest difference detectable.
-
----
-
-### Workarounds
-
-1. **Rounding**
-
-```js
-Number((0.1 + 0.2).toFixed(2)); // 0.3
-```
-
-2. **Integer Math (Scaling)**
-
-```js
-(0.1 * 10 + 0.2 * 10) / 10; // 0.3
-```
-
-3. **Libraries**
-
-- Use **big.js**, **decimal.js**, **bignumber.js** for financial/math-critical apps.
-
----
-
-### Gotchas ⚠️ (Exhaustive)
-
-1. **Equality fails**
-   - Direct comparison unreliable: `(0.1+0.2)===0.3` → false.
-2. **Large vs small numbers**
-   - Precision shrinks as numbers grow.
-   - `9007199254740993 === 9007199254740992` → true (past safe int).
-3. **Division quirks**
-   - `1/49*49` ≠ `1`.
-4. **Associativity issues**
-   - `(a+b)+c !== a+(b+c)` with floats.
-5. **JSON.stringify**
-   - Converts numbers to shortest decimal that round-trips, may look odd.
-6. **toFixed rounding**
-   - `1.005.toFixed(2)` → "1.00" (binary fraction issue).
-7. **Math.max precision**
-   - Very large values may overflow to Infinity.
-8. **-0 quirks**
-   - `1/-Infinity` → -0.
-   - `-0===0` → true, but `Object.is(-0,0)` → false.
-9. **Bitwise ops**
-   - Coerce floats to 32-bit signed ints → precision loss.
-
----
-
-### Best Practices
-
-- ✅ Avoid strict equality with decimals; use tolerance.
-- ✅ Use integer math when possible (e.g., cents instead of dollars).
-- ✅ For critical precision (finance, crypto), use decimal libraries.
-- ✅ Always test rounding (e.g., `.toFixed`, `.toPrecision`).
-- ✅ Use `BigInt` only for integers, not fractions.
-
----
-
-## 👉 Mnemonic: **“Floats Lie — Compare with EPSILON, Scale to Integers, or Use Big Decimal.”**
-
-Would you like me to next prepare a **cheat card on BigInt vs Number**, since BigInt was introduced to solve part of this precision problem?
-
-## Here’s your **Concept Mastery Cheat Sheet** for **`Number.MAX_SAFE_INTEGER` & `Number.EPSILON`** in JavaScript — compact, practical, and with **all gotchas grouped together**.
 
 # 🔢 JavaScript `Number.MAX_SAFE_INTEGER` & `Number.EPSILON` — Cheat Card
 
